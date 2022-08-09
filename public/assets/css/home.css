@@ -1,0 +1,62 @@
+.invalid-feedback{
+  display: inline;
+}
+.update-erro{
+  color: red;
+  font-size: .9rem;
+}
+.error, .error-default{
+  color: red;
+}
+.preview-img{
+  width: 100%;
+  height: 250px;
+  object-fit: contain;
+}
+.btn-outline-info:hover{
+  color: white;
+}
+.card p{
+  margin-bottom: .5rem;
+}
+.card-img{
+  margin-bottom: .6rem;
+}
+.btn-control .btn{
+  margin-right: .4rem;
+}
+.hide{
+  display: none;
+}
+@media (max-width: 500px){
+  .data-padding{
+    margin-bottom: 1.2rem;
+  }
+  #remove_cl{
+    margin-top: -2rem;
+  }
+}
+.padding{
+  height: 30vh;
+}
+.bg-msg{
+  font-size: .9rem;
+}
+.bhide{
+  display: none;
+}
+#radio{
+  margin-top: 2.8rem;
+  margin-bottom: 3rem;
+}
+.real-li{
+  position: relative;
+}
+.btn-see{
+  position: absolute;
+  right: 15px;
+  bottom: 10px;
+}
+.btn-outline-warning:hover, .btn-outline-info:hover{
+  color: white;
+}

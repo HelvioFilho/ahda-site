@@ -1,0 +1,74 @@
+.invalid-feedback{
+	display: inline;
+}
+.update-erro{
+	color: red;
+	font-size: .9rem;
+}
+.error, .aviso-update{
+	color: red;
+}
+.preview-img{
+	width: 100%;
+	height: 250px;
+	object-fit: contain;
+}
+.btnImage{
+	cursor: pointer;
+}
+.fa-plus-circle{
+	font-size: 1.7rem;	
+	color: #4E92ED;
+}
+.capsula{
+	position:relative;
+	margin-top:2em;
+	border:solid 1px gray;
+}
+#editorcontainer{
+	height:70vh; 
+	min-height:100%; 
+	overflow-y:auto;
+	margin-top:3rem;
+}
+#quill-editor{
+	min-height:100%; 
+	height:auto;
+}
+.ql-toolbar { 
+	position: absolute; 
+	top: 0;
+	left:0;
+	right:0;
+}
+/* rever font */
+.ql-container{
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1rem;
+}
+label{
+	font-family: roboto-bold;
+}
+.box-status{
+	position: relative;
+}
+.aviso-status{
+	position: absolute;
+}
+#quill-editor img{
+	max-width: 400px;
+	width: auto;
+	max-height: 300px;
+	height: auto;
+}
+@media (max-width: 1280px){
+	#editorcontainer{
+		margin-top: 5rem;
+	}
+}
+
+@media (max-width: 500px){
+	#editorcontainer{
+		margin-top: 6rem;
+	}
+}

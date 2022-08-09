@@ -37,6 +37,16 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
+// admin
+$routes->get('adm/criar_user', 'Admin::criar_adm');
+$routes->post('adm/verificar', 'Admin::verificarUser');
+$routes->post('adm/logar', 'Admin::logando');
+$routes->get('adm/recuperar_senha/(:any)/(:any)', 'Admin::recuperar_senha/$1/$2');
+$routes->get('adm/recuperar_senha/(:any)', 'Admin::recuperar_senha/$1');
+$routes->post('adm/recuperar', 'Admin::recuperar_email');
+
+
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

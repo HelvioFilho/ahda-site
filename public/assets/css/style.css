@@ -1,0 +1,58 @@
+/* fontes */
+@font-face {
+  font-family: roboto-light;
+  src: url('../fonts/roboto/Roboto-Light.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: roboto-bold;
+  src: url('../fonts/roboto/Roboto-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+p, span, a, small, input{
+	font-family: roboto-light;
+}
+h1, h2, h3, h4, h5, h6, b{
+	font-family: roboto-bold;
+}
+.anjo-icon{
+	width: 35px;
+	height: auto;
+	margin-left: .5rem;
+	margin-right: 1rem;
+}
+.bi{
+	margin-top: .3rem;
+	font-size: 1.7rem;
+}
+.control-nav{
+	margin-left: -5%;
+}
+.control-nav .btn{
+	margin-right: 1rem;
+	padding-left: 2rem;
+	padding-right: 2rem
+}
+
+@media (max-width: 991.98px) {
+	.control-nav{
+		margin-left: .6rem;
+	}
+	.control-nav .btn{
+		margin-right: 0;
+		float: right;
+	}
+}
+
+main{
+	margin-top: 5rem;
+	min-height: 70vh; 
+	height: auto;
+}
+.hsvf, .hsvf:hover{
+	text-decoration: none;
+	color: #6c757d;
+}

@@ -1,0 +1,6 @@
+.btn-outline-warning:hover, .btn-outline-info:hover{
+	color: white;
+}
+.invalid-feedback{
+	display: inline;
+}

@@ -1,0 +1,15 @@
+.bhide{
+	display: none;
+}
+.btn-outline-info:hover{
+	color: white;
+}
+.exc-msg, .vis-msg{
+	margin-right: .5rem;
+}
+.error-default{
+	color:red
+}
+.padding{
+	height: 30vh;
+}

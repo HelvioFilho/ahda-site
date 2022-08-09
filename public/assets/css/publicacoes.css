@@ -1,0 +1,55 @@
+.invalid-feedback{
+	display: inline;
+}
+.update-erro{
+	color: red;
+	font-size: .9rem;
+}
+.error, .error-default{
+	color: red;
+}
+.preview-img{
+	width: 100%;
+	height: 250px;
+	object-fit: contain;
+}
+.btnImage{
+	cursor: pointer;
+}
+.fa-plus-circle{
+	font-size: 1.7rem;
+	
+	color: #4E92ED;
+}
+.btn-search{
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+.search{
+	width: 200px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.btn-outline-info:hover{
+	color: white;
+}
+.card p{
+	margin-bottom: .5rem;
+}
+.card-img{
+	margin-bottom: .6rem;
+}
+.btn-control .btn{
+	margin-right: .4rem;
+}
+.hide{
+	display: none;
+}
+@media (max-width: 500px){
+	.data-padding{
+		margin-bottom: 1.2rem;
+	}
+}
+.padding{
+	height: 30vh;
+}

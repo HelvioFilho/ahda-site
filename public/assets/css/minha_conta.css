@@ -1,0 +1,29 @@
+.invalid-feedback{
+	display: inline;
+}
+#infor-update, #pss-update{
+	width: 150px; 
+	margin-right:.5rem;
+}
+.update-erro{
+	color: red;
+	font-size: .9rem;
+}
+.preview-img{
+	border-radius: 75px;
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+}
+.btnImage{
+	cursor: pointer;
+}
+.fa-plus-circle{
+	font-size: 1.7rem;
+	
+	color: #4E92ED;
+}
+.Avatar_error{
+	color: red;
+	visibility: hidden
+}
