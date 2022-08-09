@@ -9,13 +9,13 @@ class UserModel extends Model
   protected $table = 'admuser';
   protected $primaryKey = 'user_id';
   protected $returnType = 'object';
-  protected $allowedFields = ['user_id', 'username', 'email', 'acesso', 'passwd', 'recuperar_data', 'passwd_modificado', 'ultimo_login', 'criacao', 'img', 'sobre', 'numpost', 'desativar', 'logado'];
+  protected $allowedFields = ['user_id', 'username', 'email', 'access', 'passwd', 'recovered_at', 'passwd_changed_at', 'last_login', 'created_at', 'img', 'about', 'count_post', 'is_disabled', 'is_logged_in'];
 
   public function getAll($limit = NULL, $offset = NULL)
   {
     $db = db_connect();
     $builder = $db->table($this->table);
-    $builder->orderBy('criacao', 'DESC');
+    $builder->orderBy('created_at', 'DESC');
     if ($limit)
       $builder->limit($limit, $offset);
 
@@ -33,17 +33,17 @@ class UserModel extends Model
     }
     if ($box == "lembrar") {
       $cookieKey = url_title($user->passwd, 'underscore', TRUE);
-      cookie('logado', $cookieKey);
-      $updated['logado'] = $cookieKey;
+      cookie('is_logged_in', $cookieKey);
+      $updated['is_logged_in'] = $cookieKey;
     }
-    $updated['ultimo_login'] = date('Y-m-d H:i:s');
+    $updated['last_login'] = date('Y-m-d H:i:s');
     $this->where('email', $user->email)->set($updated)->update();
     $newdata = [
       'usuario_logado' => $user->username,
       'email' => $user->email,
-      'tipouser' => $user->acesso,
+      'tipouser' => $user->access,
       'user_id' => $user->user_id,
-      'criacao' => $user->criacao,
+      'criacao' => $user->created_at,
     ];
     $session->set($newdata);
     return true;
@@ -92,7 +92,7 @@ class UserModel extends Model
 
     $login = $this->where('email', $email)->first();
     if (isset($login)) {
-      $this->where('email', $email)->set(['recuperar_data' => date('Y-m-d H:i:s')])->update();
+      $this->where('email', $email)->set(['recovered_at' => date('Y-m-d H:i:s')])->update();
       if ($this->sendEmail($login)){
         return "ok";
       }
