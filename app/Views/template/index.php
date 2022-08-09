@@ -1,11 +1,15 @@
+<?php 
+	
+	echo $uri->getSegment(1);
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-	<?php $this->include('template/header'); ?>
+	<?= $this->include('template/header'); ?>
 </head>
 <body>
-	<?php $this->include('template/menu'); ?>
-	<?php $this->renderSection('body'); ?>
-	<?php $this->include('template/footer'); ?>
+	<?= $this->include('template/menu'); ?>
+	<?= $this->renderSection('body'); ?>
+	<?= $this->include('template/footer'); ?>
 </body>
 </html>
