@@ -18,7 +18,7 @@ class Admin extends BaseController
     }
   }
 
-  public function logando()
+  public function logIn()
   {
     $useModel = new UserModel();
     $login = $useModel->where('email',strtolower($this->request->getPost('login')))->first();
@@ -27,7 +27,7 @@ class Admin extends BaseController
     } elseif (!password_verify($this->request->getPost('pss'), $login->passwd)) {
       echo "senha";
     } else {
-      $verificar = $useModel->logar($login, $this->request->getPost('box'));
+      $verificar = $useModel->logged($login, $this->request->getPost('box'));
       if ($verificar) {
         echo "logado";
       } else {
