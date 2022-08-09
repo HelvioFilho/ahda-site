@@ -45,6 +45,16 @@ $routes->get('adm/recuperar_senha/(:any)/(:any)', 'Admin::recuperar_senha/$1/$2'
 $routes->get('adm/recuperar_senha/(:any)', 'Admin::recuperar_senha/$1');
 $routes->post('adm/recuperar', 'Admin::recuperar_email');
 
+// Rotas painel
+$routes->get('logoff', 'Painel::logoff');
+$routes->get('home', 'Painel::home');
+
+// Minha conta
+$routes->get('minha_conta', 'Painel::myAccount');
+$routes->post('minha_conta/atualizar/contato', 'Painel::conta_atualizar_contato');
+$routes->post('minha_conta/atualizar_img', 'Painel::atualizar_img');
+
+
 
 
 /*
