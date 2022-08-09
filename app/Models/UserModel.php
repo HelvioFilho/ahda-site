@@ -24,11 +24,11 @@ class UserModel extends Model
     return $user->getCustomResultObject('User');
   }
 
-  public function logado($user, $box = NULL)
+  public function logged($user, $box = NULL)
   {
     $session = session();
     $updated = array();
-    if ($user->desativar == 0) {
+    if ($user->is_disabled == 0) {
       return false;
     }
     if ($box == "lembrar") {
