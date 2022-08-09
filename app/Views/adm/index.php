@@ -39,7 +39,7 @@
         <form id="radio" class="card p-2">
           <h6 class="my-1 ms-2 mb-2">Link da Rádio</h6>
           <div class="input-group">
-            <input type="text" name="radio" class="form-control" placeholder="Link da Rádio" value="<?=(empty($link))? "" : $link->link;?>">
+            <input type="text" name="radio" class="form-control" placeholder="Link da Rádio" value="<?=(empty($url_link))? "" : $url_link->link;?>">
             <button id="at-radio" type="button" class="btn btn-outline-success">Atualizar</button>
           </div>
         </form>
@@ -56,11 +56,11 @@
                     d-flex 
                     justify-content-between 
                     lh-sm 
-                    <?=($msg->confirmation) ? "": "bg-light";?>"
+                    <?=($msg->is_read) ? "": "bg-light";?>"
           >
             <div>
               <h6 class="my-2 mb-2"><?=$msg->name;?> </h6>
-              <p class="text-muted"><b>Prévia: </b><br><?=mb_strimwidth($msg->msg, 0, 30, "..."); ?></p>
+              <p class="text-muted"><b>Prévia: </b><br><?=mb_strimwidth($msg->message, 0, 30, "..."); ?></p>
             </div>
             <div>
             	<span
@@ -68,7 +68,7 @@
                 class=" badge 
                     bg-info 
                     rounded-pill
-                    <?=($msg->confirmation) ? "bhide": "";?>
+                    <?=($msg->is_read) ? "bhide": "";?>
                     ">
                   novo
               </span>
@@ -78,7 +78,7 @@
               if($msg->email){
                 $email = "<span class='text-muted'><b>Email: </b>".$msg->email."</span>";
               }
-                    $message = "<b>Nome: </b>".$msg->name."<br>".$email."<div class='card p-2 my-4'>".$msg->msg."</div>";
+                    $message = "<b>Nome: </b>".$msg->name."<br>".$email."<div class='card p-2 my-4'>".$msg->message."</div>";
                   ?>
             <div class="btn-see">
               <button 
@@ -104,16 +104,16 @@
         <div class="card p-2 card-img" style="width: 100%;">
           <img 
               class="preview-img" 
-              src="<?=base_url(['img','capa',$post->capa])?>"
+              src="<?=base_url(['img','capa',$post->cover])?>"
             >
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
-          <b>Título: </b><p class="text-muted"><?=$post->titulo; ?></p>
+          <b>Título: </b><p class="text-muted"><?=$post->title; ?></p>
         </div>
         <div class="col-md-12">
-          <b>Prévia: </b><p class="text-muted"><?=mb_strimwidth($post->previa, 0, 50, "..."); ?></p>
+          <b>Prévia: </b><p class="text-muted"><?=mb_strimwidth($post->preview, 0, 50, "..."); ?></p>
         </div>
         <div class="col-md-12">
           <b>Criador por:</b> <p class="text-muted">
@@ -125,7 +125,7 @@
         <div class="col-md-12">
           <div class="row">
             <div class="col-md-5 data-padding">
-              <small><b>Data:</b> <span class="text-muted"><?=date('d/m/Y H:i', strtotime($post->data)) ?></span></small>
+              <small><b>Data:</b> <span class="text-muted"><?=date('d/m/Y H:i', strtotime($post->date)) ?></span></small>
             </div>
             <div class="col-md-7 d-flex justify-content-end">
               <div class="btn-control">
@@ -144,11 +144,11 @@
                   Editar
                 </a>
                 <?php 
-                  if(!empty($post->texto) && $post->publicar == 0){
+                  if(!empty($post->text) && $post->is_published == 0){
                     $btn = "btn-outline-success";
                     $mod = "Esconder";
                     $text = "Publicar";
-                  }elseif(!empty($post->texto) && $post->publicar == 1){
+                  }elseif(!empty($post->text) && $post->is_published == 1){
                     $btn = "btn-outline-danger";
                     $mod = "Publicar";
                     $text = "Esconder";

@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Models\MessageModel;
+use App\Models\PostModel;
+use App\Models\RadioModel;
 use App\Models\UserModel;
 
 class Painel extends BaseController
@@ -9,17 +12,24 @@ class Painel extends BaseController
   public function __construct()
   {
     $check = new UserModel();
+   
     // $check->
   }
 
   public function home()
   {
-    $countMsg = $this->msg->countNew();
-    $posts = $this->post->getAll(5, 0);
-    $mensagens = $this->msg->getAll(5, 0);
-    $user = $this->user->getAll();
-    $link = $this->post->getRadio();
-    $this->load->view(
+    $useModel = new UserModel();
+    $messageModel = new MessageModel();
+    $postModel = new PostModel();
+    $radioModel = new RadioModel();
+
+    $countMsg = $messageModel->countAll();
+    $posts = $postModel->get(5, 0)->getResult();
+    $mensagens = $messageModel->get(5,0)->getResult();
+    $user = $useModel->findAll();
+    $url_link = $radioModel->where('id', 1)->first();
+    
+    return view(
       'only_page',
       [
         "call" => "adm/index",
@@ -27,7 +37,9 @@ class Painel extends BaseController
         "posts" => $posts,
         "user" => $user,
         "mensagens" => $mensagens,
-        "link" => $link,
+        "url_link" => $url_link,
+        "session" => session(),
+        "uri" => service('uri'),
       ]
     );
   }

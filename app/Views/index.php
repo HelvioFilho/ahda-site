@@ -1,7 +1,7 @@
 <?php 
 $session = session();
 if(isset($_SESSION['usuario_logado'])){
-	redirect(base_url(['home']),'refresh');
+	header("Location: ".base_url('home'), true, 302);
 } 
 ?>
 <!DOCTYPE html>
