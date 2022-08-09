@@ -32,7 +32,7 @@ class Painel extends BaseController
     );
   }
 
-  public function minha_conta()
+  public function myAccount()
   {
     $countMsg = $this->msg->countNew();
     $data = $this->user->get($_SESSION['user_id']);
