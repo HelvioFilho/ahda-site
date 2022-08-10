@@ -32,8 +32,10 @@ class UserModel extends Model
       return false;
     }
     if ($box == "lembrar") {
+      helper('cookie');
+
       $cookieKey = url_title($user->passwd, 'underscore', TRUE);
-      cookie('is_logged_in', $cookieKey);
+      set_cookie('is_logged_in', $cookieKey, time()+60*60*24*90);
       $updated['is_logged_in'] = $cookieKey;
     }
     $updated['last_login'] = date('Y-m-d H:i:s');
@@ -49,6 +51,24 @@ class UserModel extends Model
     return true;
   }
 
+  public function logoff(){
+    helper('cookie');
+    $session = session();
+    
+    set_cookie('is_logged_in', '', time()+60*60*24*0);
+    
+    $newdata = [
+      'usuario_logado',
+      'email',
+      'tipouser',
+      'user_id',
+      'criacao'
+    ];
+    $session->remove($newdata);
+    $session->setFlashdata('msg', 'Você acabou de sair do painel administrativo!');
+    header("Location: ".base_url(), true, 302);
+  }
+
   public function sendEmail($login)
   {
     $email = \Config\Services::email();
@@ -60,8 +80,8 @@ class UserModel extends Model
 
     $config['protocol']  = 'smtp';
     $config['smtp_host'] = 'smtp.hostinger.com.br';
-    $config['smtp_user'] = 'suporte@hsvf.com.br';
-    $config['smtp_pass'] = 'suporte050687';
+    $config['smtp_user'] = $_ENV['SMTP_USER'];
+    $config['smtp_pass'] = $_ENV['SMTP_PASS'];
     $config['smtp_port'] = 587;
     $config['wordwrap'] = TRUE; // define se haverá quebra de palavra no texto
     $config['validate'] = TRUE; // define se haverá validação dos endereços de email

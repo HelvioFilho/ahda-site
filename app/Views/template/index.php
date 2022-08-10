@@ -1,6 +1,7 @@
 <?php 
-	
-	echo $uri->getSegment(1);
+	if(!isset($_SESSION['usuario_logado'])){
+		header("Location: ".base_url(), true, 302);
+	} 	
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

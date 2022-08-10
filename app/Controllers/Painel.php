@@ -9,16 +9,10 @@ use App\Models\UserModel;
 
 class Painel extends BaseController
 {
-  public function __construct()
-  {
-    $check = new UserModel();
-   
-    // $check->
-  }
-
+  
   public function home()
   {
-    $useModel = new UserModel();
+    $userModel = new UserModel();
     $messageModel = new MessageModel();
     $postModel = new PostModel();
     $radioModel = new RadioModel();
@@ -26,7 +20,7 @@ class Painel extends BaseController
     $countMsg = $messageModel->countAll();
     $posts = $postModel->get(5, 0)->getResult();
     $mensagens = $messageModel->get(5,0)->getResult();
-    $user = $useModel->findAll();
+    $user = $userModel->findAll();
     $url_link = $radioModel->where('id', 1)->first();
     
     return view(
@@ -668,6 +662,7 @@ class Painel extends BaseController
 
   public function logoff()
   {
-    $this->user->deslogar();
+    $userModel = new UserModel();
+    $userModel->logoff();
   }
 }
