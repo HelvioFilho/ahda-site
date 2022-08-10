@@ -1,4 +1,5 @@
-<?php 
+<?php
+	$session = session();
 	if(!isset($_SESSION['usuario_logado'])){
 		header("Location: ".base_url(), true, 302);
 	} 	

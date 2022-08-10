@@ -51,7 +51,7 @@ $routes->get('home', 'Painel::home');
 
 // Minha conta
 $routes->get('minha_conta', 'Painel::myAccount');
-$routes->post('minha_conta/atualizar/contato', 'Painel::conta_atualizar_contato');
+$routes->post('minha_conta/atualizar/contato', 'Painel::updateAccount');
 $routes->post('minha_conta/atualizar_img', 'Painel::atualizar_img');
 
 

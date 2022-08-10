@@ -9,7 +9,7 @@ use App\Models\UserModel;
 
 class Painel extends BaseController
 {
-  
+
   public function home()
   {
     $userModel = new UserModel();
@@ -17,12 +17,12 @@ class Painel extends BaseController
     $postModel = new PostModel();
     $radioModel = new RadioModel();
 
-    $countMsg = $messageModel->countAll();
+    $countMsg =  $messageModel->like('is_read', 0)->countAllResults();
     $posts = $postModel->get(5, 0)->getResult();
-    $mensagens = $messageModel->get(5,0)->getResult();
+    $mensagens = $messageModel->get(5, 0)->getResult();
     $user = $userModel->findAll();
     $url_link = $radioModel->where('id', 1)->first();
-    
+
     return view(
       'only_page',
       [
@@ -40,57 +40,66 @@ class Painel extends BaseController
 
   public function myAccount()
   {
-    $countMsg = $this->msg->countNew();
-    $data = $this->user->get($_SESSION['user_id']);
+    $session = session();
+    $userModel = new UserModel();
+    $messageModel = new MessageModel();
 
-    $this->load->view(
+    $countMsg = $messageModel->like('is_read', 0)->countAllResults();
+    $data = $userModel->where('user_id', $_SESSION['user_id'])->first();
+
+    return view(
       'only_page',
       [
         "call" => "adm/minha_conta",
         "data" => $data,
+        "session" => $session,
+        "uri" => service('uri'),
         "countMsg" => $countMsg,
       ]
     );
   }
 
-  public function conta_atualizar_contato()
+  public function updateAccount()
   {
+    $userModel = new UserModel();
+    $session = session();
 
     $total = [
-      'name'   => $this->input->post('name'),
-      'email' => $this->input->post('email'),
-      'sobre'  => $this->input->post('sobre'),
+      'name'   => $this->request->getPost('name'),
+      'email' => $this->request->getPost('email'),
+      'sobre'  => $this->request->getPost('sobre'),
       'erro'   => false,
       'msg'  => '',
     ];
-    $verifica = $this->user->verificaLogin(strtolower($this->input->post('email')));
-    if ($verifica != "true" || $_SESSION['email'] == $this->input->post('email')) {
-      $update = $this->user->update(
+    $verify = $userModel->where('email', strtolower($this->request->getPost('email')))->first();
+    if (isset($verify) || $_SESSION['email'] == $this->request->getPost('email')) {
+      $userModel->where('email', $_SESSION['email'])->update(
         [
-          'username'   => $this->input->post('name'),
-          'email'   => $this->input->post('email'),
-          'sobre'    => $this->input->post('sobre'),
+          'username'   => $this->request->getPost('name'),
+          'email'   => $this->request->getPost('email'),
+          'about'    => $this->request->getPost('sobre'),
         ],
-        $_SESSION['email']
       );
+      $newSession = [
+        'usuario_logado', $this->request->getPost('name'),
+        'email', $this->request->getPost('email')
+      ];
 
-      $this->session->set_userdata('usuario_logado', $this->input->post('name'));
-      $this->session->set_userdata('email', $this->input->post('email'));
+      $session->set($newSession);
     } else {
       $total['erro'] = true;
       $total['msg'] = '* Email já existe!';
     }
-
 
     echo json_encode($total);
   }
 
   public function atualizar_img()
   {
-    if (!empty($this->input->post('img')))
-      unlink("img/user/" . $this->input->post('img'));
+    if (!empty($this->request->getPost('img')))
+      unlink("img/user/" . $this->request->getPost('img'));
 
-    $url = $this->user->uploadImg('arquivo', $this->input->post('id'));
+    $url = $this->user->uploadImg('arquivo', $this->request->getPost('id'));
 
     if ($url) {
       $update = $this->user->update(
@@ -129,9 +138,9 @@ class Painel extends BaseController
     $gera = mt_rand(1, 9999);
     $data = [
       'user_id' => $gera,
-      'acesso' => $this->input->post('select'),
-      'username' => $this->input->post('name'),
-      'email' => $this->input->post('email'),
+      'acesso' => $this->request->getPost('select'),
+      'username' => $this->request->getPost('name'),
+      'email' => $this->request->getPost('email'),
       'passwd' => password_hash("BraVe123#", PASSWORD_DEFAULT),
       'criacao' => date('Y-m-d H:i:s'),
     ];
@@ -158,7 +167,7 @@ class Painel extends BaseController
 
   public function update_acesso()
   {
-    if ($this->input->post('acesso') == 2) {
+    if ($this->request->getPost('acesso') == 2) {
       $data['acesso'] = 2;
       $data['padrao'] = "<br>Agora é um <b>moderador</b>, podendo criar e excluir usuários, fazer publicações e publicar no aplicativo!";
     } else {
@@ -169,7 +178,7 @@ class Painel extends BaseController
       [
         'acesso' => $data['acesso'],
       ],
-      $this->input->post('id')
+      $this->request->getPost('id')
     );
     if ($update) {
       $data['error'] = true;
@@ -182,7 +191,7 @@ class Painel extends BaseController
 
   public function desativar()
   {
-    if ($this->input->post('des') == 0) {
+    if ($this->request->getPost('des') == 0) {
       $data['des'] = 1;
       $data['msg'] = "Desativar";
       $data['padrao'] = "ativado";
@@ -195,7 +204,7 @@ class Painel extends BaseController
       [
         'desativar' => $data['des'],
       ],
-      $this->input->post('id')
+      $this->request->getPost('id')
     );
     if ($update) {
       $data['error'] = true;
@@ -335,7 +344,7 @@ class Painel extends BaseController
 
   public function marcar_msg_novo()
   {
-    $data['response'] = $this->msg->update(['confirmation' => 0], $this->input->post('id'));
+    $data['response'] = $this->msg->update(['confirmation' => 0], $this->request->getPost('id'));
     $data['count'] = $this->msg->countNew();
     echo json_encode($data);
   }
@@ -343,7 +352,7 @@ class Painel extends BaseController
   public function open_msg()
   {
 
-    $data['response'] = $this->msg->update(['confirmation' => 1], $this->input->post('id'));
+    $data['response'] = $this->msg->update(['confirmation' => 1], $this->request->getPost('id'));
     $data['count'] = $this->msg->countNew();
     echo json_encode($data);
   }
@@ -413,7 +422,7 @@ class Painel extends BaseController
   public function post_add()
   {
 
-    $string = $this->input->post('title');
+    $string = $this->request->getPost('title');
     $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
     $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
 
@@ -425,8 +434,8 @@ class Painel extends BaseController
 
     $insert = $this->post->insert(
       [
-        'titulo' => $this->input->post('title'),
-        'previa' => $this->input->post('preview'),
+        'titulo' => $this->request->getPost('title'),
+        'previa' => $this->request->getPost('preview'),
         'capa' => $url,
         'data' => date('Y-m-d H:i:s'),
         'user' => $_SESSION['user_id'],
@@ -469,10 +478,10 @@ class Painel extends BaseController
 
   public function save_img()
   {
-    $string = $this->input->post('caminho');
+    $string = $this->request->getPost('caminho');
     $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
     $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
-    $caminho = $this->input->post('id');
+    $caminho = $this->request->getPost('id');
     $uploaddir = './img/post/' . $caminho;
     if (!is_dir($uploaddir)) {
       mkdir($uploaddir, 0777);
@@ -483,21 +492,21 @@ class Painel extends BaseController
 
   public function save_status()
   {
-    $check = $this->post->getStatus($this->input->post('id'));
+    $check = $this->post->getStatus($this->request->getPost('id'));
 
     if (!empty($check)) {
       $this->post->updateStatus(
         [
-          'data' => $this->input->post('data'),
+          'data' => $this->request->getPost('data'),
           'date' => date('Y-m-d H:i:s'),
         ],
-        $this->input->post('id')
+        $this->request->getPost('id')
       );
     } else {
       $this->post->insertStatus(
         [
-          'post_id' => $this->input->post('id'),
-          'data' => $this->input->post('data'),
+          'post_id' => $this->request->getPost('id'),
+          'data' => $this->request->getPost('data'),
           'date' => date('Y-m-d H:i:s'),
         ]
       );
@@ -509,7 +518,7 @@ class Painel extends BaseController
   {
     // preparação das variaveis
     $find = base_url(['img', 'post', $id]) . "/";
-    $img = explode($find, $this->input->post('imagens'));
+    $img = explode($find, $this->request->getPost('imagens'));
     array_shift($img);
     $dir = './img/post/' . $id . '/';
     if (is_dir($dir)) {
@@ -531,12 +540,12 @@ class Painel extends BaseController
         }
       }
     }
-    $string = $this->input->post('title');
+    $string = $this->request->getPost('title');
     $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
     $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
-    $data['texto'] = $this->input->post('editor');
-    $data['titulo'] = $this->input->post('title');
-    $data['previa'] = $this->input->post('preview');
+    $data['texto'] = $this->request->getPost('editor');
+    $data['titulo'] = $this->request->getPost('title');
+    $data['previa'] = $this->request->getPost('preview');
     $data['datePost'] = date('Y-m-d H:i:s');
     if (!empty($_FILES['arquivo']['size'])) {
       $url = $this->post->uploadImg('arquivo', $string);
@@ -573,11 +582,11 @@ class Painel extends BaseController
 
   public function publicar()
   {
-    if ($this->input->post('mod') == "Esconder") {
-      $update = $this->post->update(['publicar' => 1], $this->input->post('id'));
+    if ($this->request->getPost('mod') == "Esconder") {
+      $update = $this->post->update(['publicar' => 1], $this->request->getPost('id'));
       $data = "Publicar";
     } else {
-      $update = $this->post->update(['publicar' => 0], $this->input->post('id'));
+      $update = $this->post->update(['publicar' => 0], $this->request->getPost('id'));
       $data = "Esconder";
     }
 
@@ -589,9 +598,9 @@ class Painel extends BaseController
     $this->load->library(['pagination']);
     $countMsg = $this->msg->countNew();
 
-    if ($this->input->post('busca')) {
-      $busca = $this->input->post('busca');
-      $this->session->set_userdata('search', $this->input->post('busca'));
+    if ($this->request->getPost('busca')) {
+      $busca = $this->request->getPost('busca');
+      $this->session->set_userdata('search', $this->request->getPost('busca'));
     } elseif ($_SESSION['search']) {
       $busca = $_SESSION['search'];
     } else {
@@ -657,7 +666,7 @@ class Painel extends BaseController
 
   public function update_radio()
   {
-    $this->post->radio(['link' => $this->input->post('link')]);
+    $this->post->radio(['link' => $this->request->getPost('link')]);
   }
 
   public function logoff()
