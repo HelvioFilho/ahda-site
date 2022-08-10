@@ -71,18 +71,18 @@ class Painel extends BaseController
       'erro'   => false,
       'msg'  => '',
     ];
-    $verify = $userModel->where('email', strtolower($this->request->getPost('email')))->first();
-    if (isset($verify) || $_SESSION['email'] == $this->request->getPost('email')) {
-      $userModel->where('email', $_SESSION['email'])->update(
-        [
-          'username'   => $this->request->getPost('name'),
-          'email'   => $this->request->getPost('email'),
-          'about'    => $this->request->getPost('sobre'),
-        ],
-      );
+    $verify = $userModel->where('email', strtolower($total['email']))->first();
+    if (!isset($verify) || $_SESSION['email'] == $total['email']) {
+
+      $dataUp = [
+        'username'   => $total['name'],
+        'email'   => $total['email'],
+        'about'    => $total['sobre'],
+      ];
+      $userModel->where('email', $_SESSION['email'])->set($dataUp)->update();
       $newSession = [
-        'usuario_logado', $this->request->getPost('name'),
-        'email', $this->request->getPost('email')
+        'usuario_logado' => $total['name'],
+        'email' => $total['email']
       ];
 
       $session->set($newSession);
