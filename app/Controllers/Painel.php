@@ -10,6 +10,12 @@ use App\Models\UserModel;
 class Painel extends BaseController
 {
 
+  public function __construct()
+  {
+    $userModel = new UserModel();
+    $userModel->verifyLogin();
+  }
+
   public function home()
   {
     $userModel = new UserModel();
@@ -672,6 +678,6 @@ class Painel extends BaseController
   public function logoff()
   {
     $userModel = new UserModel();
-    $userModel->logoff();
+    $userModel->logoff("Você acabou de sair do painel administrativo!");
   }
 }
