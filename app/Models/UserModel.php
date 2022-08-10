@@ -62,8 +62,9 @@ class UserModel extends Model
   {
     helper('cookie');
     $session = session();
-
-    set_cookie('is_logged_in', '', time() + 60 * 60 * 24 * 0);
+    $cookie = get_cookie('is_logged_in');
+    $user = $this->where('is_logged_in', $cookie)->first();
+    $this->where('email', $user->email)->set('is_logged_in', '')->update();
 
     $newdata = [
       'usuario_logado',
@@ -74,7 +75,6 @@ class UserModel extends Model
     ];
     $session->remove($newdata);
     $session->setFlashdata('msg', $message);
-    header("Location: " . base_url(), true, 302);
   }
 
   public function sendEmail($login)
@@ -130,26 +130,39 @@ class UserModel extends Model
 
   public function verifyLogin()
   {
-    $session = session();
+    session();
     helper('cookie');
+
+    $data = [
+      "status" => false
+    ];
+
     $cookie = get_cookie('is_logged_in');
     if (isset($cookie)) {
       $user = $this->where('is_logged_in', $cookie)->first();
-      if ($user->is_disabled) {
-        if (!isset($_SESSION['usuario_logado'])) {
-          $this->setData($user);
+      if($user){
+        if ($user->is_disabled) {
+          if (!isset($_SESSION['usuario_logado'])) {
+            $this->setData($user);
+          }
+        }else{
+          $data["status"] = true;
+          $data["message"] = "Você foi desativado e perdeu o acesso ao sistema!";
         }
-      }else{
-        $this->logoff("Você foi desativado e perdeu o acesso ao sistema!");
       }
     } elseif(isset($_SESSION['user_id'])){
       $check = $this->where('user_id',$_SESSION['user_id'])->first();
       if(!$check->is_disabled){
-        $this->logoff("Você foi desativado e perdeu o acesso ao sistema!");
+        $data["status"] = true;
+        $data["message"] = "Você foi desativado e perdeu o acesso ao sistema!";
       }
     }else{
-      $session->setFlashdata('msg', 'Você foi deslogado do painel administrativo por inatividade!');
-      header("Location: " . base_url(), true, 302);
+      $data["status"] = true;
+      $data["message"] = "Parece que você não está logado no sistema!";
+    }
+
+    if($data["status"] === true){
+      $this->logoff($data['message']);
     }
   }
 }

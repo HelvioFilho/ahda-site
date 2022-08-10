@@ -10,14 +10,18 @@ use App\Models\UserModel;
 class Painel extends BaseController
 {
 
-  public function __construct()
-  {
+  public function __construct(){
     $userModel = new UserModel();
     $userModel->verifyLogin();
   }
 
   public function home()
   {
+    $session = session();
+    if(!isset($_SESSION['user_id'])){
+      return redirect()->to('/');
+    }
+
     $userModel = new UserModel();
     $messageModel = new MessageModel();
     $postModel = new PostModel();
@@ -28,7 +32,7 @@ class Painel extends BaseController
     $mensagens = $messageModel->get(5, 0)->getResult();
     $user = $userModel->findAll();
     $url_link = $radioModel->where('id', 1)->first();
-
+    
     return view(
       'only_page',
       [
@@ -38,7 +42,7 @@ class Painel extends BaseController
         "user" => $user,
         "mensagens" => $mensagens,
         "url_link" => $url_link,
-        "session" => session(),
+        "session" => $session,
         "uri" => service('uri'),
       ]
     );
@@ -47,6 +51,10 @@ class Painel extends BaseController
   public function myAccount()
   {
     $session = session();
+    if(!isset($_SESSION['user_id'])){
+      return redirect()->to('/');
+    }
+
     $userModel = new UserModel();
     $messageModel = new MessageModel();
 
@@ -679,5 +687,6 @@ class Painel extends BaseController
   {
     $userModel = new UserModel();
     $userModel->logoff("Você acabou de sair do painel administrativo!");
+    return redirect()->to('/');
   }
 }
