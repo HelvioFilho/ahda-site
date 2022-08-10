@@ -66,13 +66,13 @@ class Admin extends BaseController
   public function recuperar_senha($chave = null, $id = null)
   {
     $session = session();
-    $useModel = new UserModel();
+    $userModel = new UserModel();
 
     $clava = explode("Q1T1Q", $chave);
     $id = explode("Q1T1Q", $id);
 
     if (isset($id[1])) {
-      $infor = $useModel->where('user_id',$id[1])->first();
+      $infor = $userModel->where('user_id',$id[1])->first();
       if (isset($infor)) {
         if ($clava[0] === url_title($infor->passwd)) {
           return view(
@@ -83,22 +83,22 @@ class Admin extends BaseController
           );
         } else {
           $session->setFlashdata('msg', 'Link já utilizado, se ainda precisa recuperar a senha, solicite um novo link apertando em <b>Esqueci a senha</b>!');
-          redirect(base_url(), 'refresh');
+          return redirect()->to('/');
         }
       } else {
         $session->setFlashdata('msg', 'Usuário do link é inválido, se o problema persistir entre em contato com um administrador!');
-        redirect(base_url(), 'refresh');
+        return redirect()->to('/');
       }
     } elseif ($chave == 'holdinster') {
-      echo $useModel->where('user_id',$this->request->getPost('id'))->set(
+      $userModel->where('user_id',$this->request->getPost('id'))->set(
         [
           'passwd' => password_hash($this->request->getPost('senha'), PASSWORD_DEFAULT),
           'passwd_modificado' => date('Y-m-d H:i:s'),
-        ],
-        $this->request->getPost('id')
+        ]
       )->update();
+      echo true;
     } else {
-      redirect(base_url(), 'refresh');
+      return redirect()->to('/');
     }
   }
 }
