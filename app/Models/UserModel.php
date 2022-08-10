@@ -24,9 +24,25 @@ class UserModel extends Model
     return $user->getCustomResultObject('User');
   }
 
-  public function logged($user, $box = NULL)
+  public function setData($user, $updated = NULL)
   {
     $session = session();
+
+    $updated['last_login'] = date('Y-m-d H:i:s');
+    $this->where('email', $user->email)->set($updated)->update();
+    $newdata = [
+      'usuario_logado' => $user ? $user->username : '',
+      'email' => $user ? $user->email : '',
+      'tipouser' => $user ? $user->access : '',
+      'user_id' => $user ? $user->user_id : '',
+      'criacao' => $user ? $user->created_at : '',
+    ];
+    $session->set($newdata);
+    return true;
+  }
+
+  public function logged($user, $box = NULL)
+  {
     $updated = array();
     if ($user->is_disabled == 0) {
       return false;
@@ -35,28 +51,20 @@ class UserModel extends Model
       helper('cookie');
 
       $cookieKey = url_title($user->passwd, 'underscore', TRUE);
-      set_cookie('is_logged_in', $cookieKey, time()+60*60*24*90);
+      set_cookie('is_logged_in', $cookieKey, time() + 60 * 60 * 24 * 90);
       $updated['is_logged_in'] = $cookieKey;
     }
-    $updated['last_login'] = date('Y-m-d H:i:s');
-    $this->where('email', $user->email)->set($updated)->update();
-    $newdata = [
-      'usuario_logado' => $user->username,
-      'email' => $user->email,
-      'tipouser' => $user->access,
-      'user_id' => $user->user_id,
-      'criacao' => $user->created_at,
-    ];
-    $session->set($newdata);
-    return true;
+    
+    return $this->setData($user, $updated);
   }
 
-  public function logoff(){
+  public function logoff($message)
+  {
     helper('cookie');
     $session = session();
-    
-    set_cookie('is_logged_in', '', time()+60*60*24*0);
-    
+
+    set_cookie('is_logged_in', '', time() + 60 * 60 * 24 * 0);
+
     $newdata = [
       'usuario_logado',
       'email',
@@ -65,8 +73,8 @@ class UserModel extends Model
       'criacao'
     ];
     $session->remove($newdata);
-    $session->setFlashdata('msg', 'Você acabou de sair do painel administrativo!');
-    header("Location: ".base_url(), true, 302);
+    $session->setFlashdata('msg', $message);
+    header("Location: " . base_url(), true, 302);
   }
 
   public function sendEmail($login)
@@ -113,10 +121,35 @@ class UserModel extends Model
     $login = $this->where('email', $email)->first();
     if (isset($login)) {
       $this->where('email', $email)->set(['recovered_at' => date('Y-m-d H:i:s')])->update();
-      if ($this->sendEmail($login)){
+      if ($this->sendEmail($login)) {
         return "ok";
       }
     }
     return "false";
+  }
+
+  public function verifyLogin()
+  {
+    $session = session();
+    helper('cookie');
+    $cookie = get_cookie('is_logged_in');
+    if (isset($cookie)) {
+      $user = $this->where('is_logged_in', $cookie)->first();
+      if ($user->is_disabled) {
+        if (!isset($_SESSION['usuario_logado'])) {
+          $this->setData($user);
+        }
+      }else{
+        $this->logoff("Você foi desativado e perdeu o acesso ao sistema!");
+      }
+    } elseif(isset($_SESSION['user_id'])){
+      $check = $this->where('user_id',$_SESSION['user_id'])->first();
+      if(!$check->is_disabled){
+        $this->logoff("Você foi desativado e perdeu o acesso ao sistema!");
+      }
+    }else{
+      $session->setFlashdata('msg', 'Você foi deslogado do painel administrativo por inatividade!');
+      header("Location: " . base_url(), true, 302);
+    }
   }
 }
