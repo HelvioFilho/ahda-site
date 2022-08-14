@@ -10,7 +10,8 @@ use App\Models\UserModel;
 class Painel extends BaseController
 {
 
-  public function __construct(){
+  public function __construct()
+  {
     $userModel = new UserModel();
     $userModel->verifyLogin();
   }
@@ -18,7 +19,7 @@ class Painel extends BaseController
   public function home()
   {
     $session = session();
-    if(!isset($_SESSION['user_id'])){
+    if (!isset($_SESSION['user_id'])) {
       return redirect()->to('/');
     }
 
@@ -32,7 +33,7 @@ class Painel extends BaseController
     $mensagens = $messageModel->get(5, 0)->getResult();
     $user = $userModel->findAll();
     $url_link = $radioModel->where('id', 1)->first();
-    
+
     return view(
       'only_page',
       [
@@ -51,7 +52,7 @@ class Painel extends BaseController
   public function myAccount()
   {
     $session = session();
-    if(!isset($_SESSION['user_id'])){
+    if (!isset($_SESSION['user_id'])) {
       return redirect()->to('/');
     }
 
@@ -108,29 +109,27 @@ class Painel extends BaseController
     echo json_encode($total);
   }
 
-  public function atualizar_img()
+  public function updateImage()
   {
+    $userModel = new UserModel();
+    $session = session();
+
     if (!empty($this->request->getPost('img')))
       unlink("img/user/" . $this->request->getPost('img'));
 
-    $url = $this->user->uploadImg('arquivo', $this->request->getPost('id'));
-
-    if ($url) {
-      $update = $this->user->update(
-        [
-          "img" => $url
-        ],
-        $_SESSION['email']
-      );
+    $file = $this->request->getFile('arquivo');
+    $url = $userModel->uploadImg($file);
+    if($url){
+      $update = $userModel->where('email', $_SESSION['email'])->set(["img" => $url])->update();
       if ($update) {
-        $this->session->set_flashdata('error', 'success');
+        $session->setFlashdata('error', 'success');
       } else {
-        $this->session->set_flashdata('error', 'Erro ao atualizar a imagem.');
+        $session->setFlashdata('error', 'Erro ao atualizar a imagem.');
       }
     } else {
-      $this->session->set_flashdata('error', 'Erro ao salvar a imagem');
+      $session->setFlashdata('error', 'Erro ao salvar a imagem');
     }
-    redirect(base_url(['minha_conta']), 'refresh');
+    return redirect()->to('minha_conta');
   }
 
   public function usuarios($page = 0)
@@ -161,11 +160,11 @@ class Painel extends BaseController
 
     $inserir = $this->user->inserir($data);
     if ($inserir) {
-      $this->session->set_flashdata('error', 'success');
-      $this->session->set_flashdata('msg', 'Usuário adicionado com sucesso!');
+      $this->session->setFlashdata('error', 'success');
+      $this->session->setFlashdata('msg', 'Usuário adicionado com sucesso!');
     } else {
-      $this->session->set_flashdata('error', 'danger');
-      $this->session->set_flashdata('msg', 'Não foi possível adicionar o usuário!');
+      $this->session->setFlashdata('error', 'danger');
+      $this->session->setFlashdata('msg', 'Não foi possível adicionar o usuário!');
     }
     redirect(base_url(['usuarios']), 'refresh');
   }
@@ -461,11 +460,11 @@ class Painel extends BaseController
       $add = $this->user->get($_SESSION['user_id']);
       $total = $add->numpost + 1;
       $this->user->userUpdate(['numpost' => $total], $_SESSION['user_id']);
-      $this->session->set_flashdata('error', 'success');
-      $this->session->set_flashdata('msg', 'Publicação adicionada com sucesso!');
+      $this->session->setFlashdata('error', 'success');
+      $this->session->setFlashdata('msg', 'Publicação adicionada com sucesso!');
     } else {
-      $this->session->set_flashdata('error', 'danger');
-      $this->session->set_flashdata('msg', 'Não foi possível adicionar a publicação!');
+      $this->session->setFlashdata('error', 'danger');
+      $this->session->setFlashdata('msg', 'Não foi possível adicionar a publicação!');
     }
 
     redirect('publicacoes', 'refresh');
@@ -567,12 +566,12 @@ class Painel extends BaseController
     }
     $update = $this->post->update($data, $id);
     if ($update) {
-      $this->session->set_flashdata('error', 'success');
-      $this->session->set_flashdata('msg', 'Publicação atualizada com sucesso! Agora ela pode ser publicada!');
+      $this->session->setFlashdata('error', 'success');
+      $this->session->setFlashdata('msg', 'Publicação atualizada com sucesso! Agora ela pode ser publicada!');
       $this->post->deleteStatus($id);
     } else {
-      $this->session->set_flashdata('error', 'danger');
-      $this->session->set_flashdata('msg', 'Não foi possível atualizar a publicação!');
+      $this->session->setFlashdata('error', 'danger');
+      $this->session->setFlashdata('msg', 'Não foi possível atualizar a publicação!');
     }
     redirect('publicacoes', 'refresh');
   }

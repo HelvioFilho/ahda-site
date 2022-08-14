@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use Image_moo;
 
 class UserModel extends Model
 {
@@ -165,4 +166,19 @@ class UserModel extends Model
       $this->logoff($data['message']);
     }
   }
+
+  public function uploadImg($arquivo){
+    require_once APPPATH . '/Libraries/Image_moo.php';
+    
+    $imageEdited = new \Image_moo();
+
+		$newName = $arquivo->getRandomName();
+		$arquivo->move('./img/user/', $newName);
+
+		$imageEdited
+			->load('./img/user/' . $newName)
+			->save('./img/user/' . $newName, true);
+
+			return $newName;
+	}
 }
