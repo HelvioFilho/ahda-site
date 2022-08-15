@@ -132,16 +132,27 @@ class Painel extends BaseController
     return redirect()->to('minha_conta');
   }
 
-  public function usuarios($page = 0)
+  public function usuarios()
   {
-    $countMsg = $this->msg->countNew();
-    $user = $this->user->getAll();
-    $this->load->view(
+    $session = session();
+    if (!isset($_SESSION['user_id'])) {
+      return redirect()->to('/');
+    }
+
+    $userModel = new UserModel();
+    $messageModel = new MessageModel();
+
+    $countMsg = $messageModel->like('is_read', 0)->countAllResults();
+    $user = $userModel->findAll();
+
+    return view(
       'only_page',
       [
         "call" => "adm/usuarios",
         "users" => $user,
         "countMsg" => $countMsg,
+        "session" => $session,
+        "uri" => service('uri'),
       ]
     );
   }
