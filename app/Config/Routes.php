@@ -57,7 +57,7 @@ $routes->post('minha_conta/atualizar_img', 'Painel::updateImage');
 // usuários
 $routes->get('usuarios', 'Painel::usuarios');
 $routes->post('user/add', 'Painel::add_user');
-$routes->post('delete_user/(:num)', 'Painel::del_user/$1');
+$routes->get('delete_user/(:num)', 'Painel::del_user/$1');
 $routes->post('desabilitar_user', 'Painel::desativar');
 $routes->post('alterar_acesso', 'Painel::update_acesso');
 
