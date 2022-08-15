@@ -159,6 +159,9 @@ class Painel extends BaseController
 
   public function add_user()
   {
+    $session = session();
+    $userModel = new UserModel();
+
     $gera = mt_rand(1, 9999);
     $data = [
       'user_id' => $gera,
@@ -169,15 +172,14 @@ class Painel extends BaseController
       'criacao' => date('Y-m-d H:i:s'),
     ];
 
-    $inserir = $this->user->inserir($data);
-    if ($inserir) {
-      $this->session->setFlashdata('error', 'success');
-      $this->session->setFlashdata('msg', 'Usuário adicionado com sucesso!');
+    if ($userModel->insert($data)) {
+      $session->setFlashdata('error', 'success');
+      $session->setFlashdata('msg', 'Usuário adicionado com sucesso!');
     } else {
-      $this->session->setFlashdata('error', 'danger');
-      $this->session->setFlashdata('msg', 'Não foi possível adicionar o usuário!');
+      $session->setFlashdata('error', 'danger');
+      $session->setFlashdata('msg', 'Não foi possível adicionar o usuário!');
     }
-    redirect(base_url(['usuarios']), 'refresh');
+    return redirect()->to('usuarios');
   }
 
   public function del_user($del)
@@ -445,7 +447,7 @@ class Painel extends BaseController
 
   public function post_add()
   {
-
+    $session = session();
     $string = $this->request->getPost('title');
     $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
     $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
@@ -471,11 +473,11 @@ class Painel extends BaseController
       $add = $this->user->get($_SESSION['user_id']);
       $total = $add->numpost + 1;
       $this->user->userUpdate(['numpost' => $total], $_SESSION['user_id']);
-      $this->session->setFlashdata('error', 'success');
-      $this->session->setFlashdata('msg', 'Publicação adicionada com sucesso!');
+      $session->setFlashdata('error', 'success');
+      $session->setFlashdata('msg', 'Publicação adicionada com sucesso!');
     } else {
-      $this->session->setFlashdata('error', 'danger');
-      $this->session->setFlashdata('msg', 'Não foi possível adicionar a publicação!');
+      $session->setFlashdata('error', 'danger');
+      $session->setFlashdata('msg', 'Não foi possível adicionar a publicação!');
     }
 
     redirect('publicacoes', 'refresh');
@@ -540,6 +542,7 @@ class Painel extends BaseController
 
   public function page_update($id)
   {
+    $session = session();
     // preparação das variaveis
     $find = base_url(['img', 'post', $id]) . "/";
     $img = explode($find, $this->request->getPost('imagens'));
@@ -577,12 +580,12 @@ class Painel extends BaseController
     }
     $update = $this->post->update($data, $id);
     if ($update) {
-      $this->session->setFlashdata('error', 'success');
-      $this->session->setFlashdata('msg', 'Publicação atualizada com sucesso! Agora ela pode ser publicada!');
+      $session->setFlashdata('error', 'success');
+      $session->setFlashdata('msg', 'Publicação atualizada com sucesso! Agora ela pode ser publicada!');
       $this->post->deleteStatus($id);
     } else {
-      $this->session->setFlashdata('error', 'danger');
-      $this->session->setFlashdata('msg', 'Não foi possível atualizar a publicação!');
+      $session->setFlashdata('error', 'danger');
+      $session->setFlashdata('msg', 'Não foi possível atualizar a publicação!');
     }
     redirect('publicacoes', 'refresh');
   }
@@ -619,12 +622,13 @@ class Painel extends BaseController
 
   public function pub_search($page = 0)
   {
+    $session = session();
     $this->load->library(['pagination']);
     $countMsg = $this->msg->countNew();
 
     if ($this->request->getPost('busca')) {
       $busca = $this->request->getPost('busca');
-      $this->session->set_userdata('search', $this->request->getPost('busca'));
+      $session->set_userdata('search', $this->request->getPost('busca'));
     } elseif ($_SESSION['search']) {
       $busca = $_SESSION['search'];
     } else {
