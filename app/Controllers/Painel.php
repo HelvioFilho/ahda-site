@@ -119,7 +119,7 @@ class Painel extends BaseController
 
     $file = $this->request->getFile('arquivo');
     $url = $userModel->uploadImg($file);
-    if($url){
+    if ($url) {
       $update = $userModel->where('email', $_SESSION['email'])->set(["img" => $url])->update();
       if ($update) {
         $session->setFlashdata('error', 'success');
@@ -195,6 +195,8 @@ class Painel extends BaseController
 
   public function update_acesso()
   {
+    $userModel = new UserModel();
+    
     if ($this->request->getPost('acesso') == 2) {
       $data['acesso'] = 2;
       $data['padrao'] = "<br>Agora é um <b>moderador</b>, podendo criar e excluir usuários, fazer publicações e publicar no aplicativo!";
@@ -202,13 +204,10 @@ class Painel extends BaseController
       $data['acesso'] = 3;
       $data['padrao'] = "<br>Agora é um <b>usuário normal</b>, podendo fazer apenas publicações no aplicativo!";
     }
-    $update = $this->user->userUpdate(
-      [
-        'acesso' => $data['acesso'],
-      ],
-      $this->request->getPost('id')
-    );
-    if ($update) {
+
+    $verify = $userModel->where('user_id', $this->request->getPost('id'))->set(['access' => $data['acesso']])->update();
+    
+    if ($verify) {
       $data['error'] = true;
     } else {
       $data['error'] = false;
