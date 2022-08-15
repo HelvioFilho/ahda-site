@@ -39,14 +39,14 @@
       <div class="d-flex justify-content-between">
         <h4 class="mb-3 text-primary">Mensagens</h4>
         <div>
-          <button type="button" class="btn btn-primary">Todos</button>
-          <a href="<?= base_url(['mensagens/novo']) ?>" class="btn btn-secondary">Novos</a>
+          <a href="<?= base_url(['mensagens']) ?>" class="btn btn-secondary">Todos</a>
+          <button type="button" class="btn btn-primary">Novos</button>
         </div>
       </div>
       <br>
       <?php if (empty($mensagens)) : ?>
         <div class="padding d-flex align-items-center justify-content-center">
-          <h3>Ainda não há mensagens!</h3>
+          <h3>Não há novas mensagens!</h3>
         </div>
       <?php endif; ?>
       <?php foreach ($mensagens as $msg) : ?>

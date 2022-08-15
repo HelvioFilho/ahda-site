@@ -65,7 +65,6 @@ $routes->post('alterar_acesso', 'Painel::updated_access');
 $routes->get('mensagens', 'Painel::message');
 $routes->get('mensagens/(:num)', 'Painel::message/$1');
 $routes->get('mensagens/novo', 'Painel::newMessage');
-$routes->get('mensagens/novo/(:num)', 'Painel::newMessage/$1');
 $routes->get('delete_mensagem/(:num)', 'Painel::deleteMessage/$1');
 $routes->get('marcar_novo', 'Painel::markMessage');
 $routes->get('abrir_mensagem', 'Painel::OpenMessage');

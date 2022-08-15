@@ -267,62 +267,29 @@ class Painel extends BaseController
     );
   }
 
-  public function mensagens_novo($page = 0)
+  public function newMessage()
   {
-    $countMsg = $this->msg->countNew();
-    $this->load->library(['pagination']);
 
-    $config = array(
-      "base_url"       => base_url(['mensagens', 'novo']),
-      "per_page"       => 5,
-      "num_links"     => 2,
-      "use_page_numbers"   => TRUE,
-      "uri_segment"     => 3,
-      "total_rows"     => $this->msg->countNew(),
-    );
-    $config['full_tag_open'] = '<ul class="pagination">';
-    $config['full_tag_close'] = '</ul>';
-    $config['attributes'] = ['class' => 'page-link'];
-    $config['first_link'] = false;
-    $config['last_link'] = false;
-    $config['first_tag_open'] = '<li class="page-item">';
-    $config['first_tag_close'] = '</li>';
-    $config['prev_link'] = '&laquo';
-    $config['prev_tag_open'] = '<li class="page-item">';
-    $config['prev_tag_close'] = '</li>';
-    $config['next_link'] = '&raquo';
-    $config['next_tag_open'] = '<li class="page-item">';
-    $config['next_tag_close'] = '</li>';
-    $config['last_tag_open'] = '<li class="page-item">';
-    $config['last_tag_close'] = '</li>';
-    $config['cur_tag_open'] = '<li class="page-item active"><a href="#" class="page-link">';
-    $config['cur_tag_close'] = '<span class="sr-only">(current)</span></a></li>';
-    $config['num_tag_open'] = '<li class="page-item">';
-    $config['num_tag_close'] = '</li>';
-
-    if ($page !== 0) {
-      $cont = $page - 1;
-      $limite = $cont * 5;
-    } else {
-      $limite = 0;
+    $session = session();
+    if (!isset($_SESSION['user_id'])) {
+      return redirect()->to('/');
     }
 
-    $mensagens = $this->msg->getAll($config['per_page'], $limite, TRUE);
+    $messageModel = new MessageModel();
 
-    if ($page != 0) {
-      if (empty($mensagens)) {
-        redirect(base_url(['mensagens/novo']), 'refresh');
-      }
-    }
+    $countMsg = $messageModel->like('is_read', 0)->countAllResults();
+    $message = $messageModel->like('is_read', 0)->orderBy('id', 'DESC')->paginate(5);
+    $pager = $messageModel->pager;
 
-    $this->pagination->initialize($config);
-
-    $this->load->view(
+    return view(
       'only_page',
       [
-        "call" => "adm/mensagens_novo",
-        "mensagens" => $mensagens,
+        "call" => "adm/newMessage",
+        "mensagens" => $message,
         "countMsg" => $countMsg,
+        "pager" => $pager,
+        "session" => $session,
+        "uri" => service('uri'),
       ]
     );
   }
