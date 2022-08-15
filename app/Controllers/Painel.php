@@ -193,10 +193,10 @@ class Painel extends BaseController
     echo $userModel->delete(['id' => $del]);
   }
 
-  public function update_acesso()
+  public function updated_access()
   {
     $userModel = new UserModel();
-    
+
     if ($this->request->getPost('acesso') == 2) {
       $data['acesso'] = 2;
       $data['padrao'] = "<br>Agora é um <b>moderador</b>, podendo criar e excluir usuários, fazer publicações e publicar no aplicativo!";
@@ -206,7 +206,7 @@ class Painel extends BaseController
     }
 
     $verify = $userModel->where('user_id', $this->request->getPost('id'))->set(['access' => $data['acesso']])->update();
-    
+
     if ($verify) {
       $data['error'] = true;
     } else {
@@ -216,8 +216,10 @@ class Painel extends BaseController
     echo json_encode($data);
   }
 
-  public function desativar()
+  public function disabled()
   {
+    $userModel = new UserModel();
+
     if ($this->request->getPost('des') == 0) {
       $data['des'] = 1;
       $data['msg'] = "Desativar";
@@ -227,13 +229,10 @@ class Painel extends BaseController
       $data['msg'] = "Ativar";
       $data['padrao'] = "desativado";
     }
-    $update = $this->user->userUpdate(
-      [
-        'desativar' => $data['des'],
-      ],
-      $this->request->getPost('id')
-    );
-    if ($update) {
+
+    $verify = $userModel->where('user_id', $this->request->getPost('id'))->set(['is_disabled' => $data['des']])->update();
+
+    if ($verify) {
       $data['error'] = true;
     } else {
       $data['error'] = false;
