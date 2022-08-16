@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\MessageModel;
 use App\Models\PostModel;
 use App\Models\RadioModel;
+use App\Models\StatusModel;
 use App\Models\UserModel;
 
 class Painel extends BaseController
@@ -306,7 +307,7 @@ class Painel extends BaseController
   public function markMessage()
   {
     $messageModel = new MessageModel();
-    
+
     $data['response'] = $messageModel->where('id', $this->request->getPost('id'))->set(['is_read' => 0])->update();
     $data['count'] = $messageModel->like('is_read', 0)->countAllResults();
     echo json_encode($data);
@@ -368,12 +369,12 @@ class Painel extends BaseController
     }
 
     $data = [
-        'title' => $this->request->getPost('title'),
-        'preview' => $this->request->getPost('preview'),
-        'cover' => $url,
-        'date' => date('Y-m-d H:i:s'),
-        'user' => $_SESSION['user_id'],
-      ];
+      'title' => $this->request->getPost('title'),
+      'preview' => $this->request->getPost('preview'),
+      'cover' => $url,
+      'date' => date('Y-m-d H:i:s'),
+      'user' => $_SESSION['user_id'],
+    ];
 
     if ($postModel->insert($data)) {
       $add = $userModel->where('user_id', $_SESSION['user_id'])->first();
@@ -390,19 +391,31 @@ class Painel extends BaseController
 
   public function page_edit($id)
   {
-    $countMsg = $this->msg->countNew();
-    $post = $this->post->get($id);
-    $user = $this->user->getAll();
-    $status = $this->post->getStatus($post->id);
+    $session = session();
+    if (!isset($_SESSION['user_id'])) {
+      return redirect()->to('/');
+    }
 
-    $this->load->view(
+    $userModel = new UserModel();
+    $messageModel = new MessageModel();
+    $postModel = new PostModel();
+    $statusModel = new StatusModel();
+
+    $countMsg = $messageModel->like('is_read', 0)->countAllResults();
+    $post = $postModel->where('id', $id)->first();
+    $user = $userModel->findAll();
+    $status = $statusModel->where('post_id', $id)->first();
+
+    return view(
       'only_page',
       [
-        "call" => "adm/page_edit",
+        "call" => "adm/editPage",
         "post" => $post,
         "countMsg" => $countMsg,
         "user" => $user,
         "status" => $status,
+        "session" => $session,
+        "uri" => service('uri'),
       ]
     );
   }
