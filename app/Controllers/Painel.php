@@ -422,32 +422,38 @@ class Painel extends BaseController
 
   public function save_img()
   {
+    $postModel = new PostModel();
+    // verificar necessidade
     $string = $this->request->getPost('caminho');
     $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
     $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
-    $caminho = $this->request->getPost('id');
-    $uploaddir = './img/post/' . $caminho;
+    // ~~~
+    $folder = $this->request->getPost('id');
+    $uploaddir = './img/post/' . $folder;
     if (!is_dir($uploaddir)) {
       mkdir($uploaddir, 0777);
     }
-    $url = $this->post->subirImg('image', $caminho);
-    echo base_url(['img', 'post', $caminho, $url]);
+    $file = $this->request->getFile('image');
+
+    $url = $postModel->uploadImg($file, 'post/');
+    echo base_url(['img', 'post', $folder, $url]);
   }
 
   public function save_status()
   {
-    $check = $this->post->getStatus($this->request->getPost('id'));
+    $statusModel = new PostModel();
+
+    $check = $statusModel->where('post_id', $this->request->getPost('id'))->first();
 
     if (!empty($check)) {
-      $this->post->updateStatus(
+      $statusModel->where('post_id', $this->request->getPost('id'))->set(
         [
           'data' => $this->request->getPost('data'),
           'date' => date('Y-m-d H:i:s'),
-        ],
-        $this->request->getPost('id')
-      );
+        ]
+      )->update();
     } else {
-      $this->post->insertStatus(
+      $statusModel->insert(
         [
           'post_id' => $this->request->getPost('id'),
           'data' => $this->request->getPost('data'),
