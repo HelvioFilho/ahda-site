@@ -353,39 +353,39 @@ class Painel extends BaseController
   public function post_add()
   {
     $session = session();
+    $postModel = new PostModel();
+    $userModel = new UserModel();
+
     $string = $this->request->getPost('title');
     $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
     $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
 
-    if (!empty($_FILES['arquivo']['size'])) {
-      $url = $this->post->uploadImg('arquivo', $string);
+    $file = $this->request->getFile('arquivo');
+    if ($file) {
+      $url = $postModel->uploadImg($file, 'capa/');
     } else {
       $url = "angel-default.jpg";
     }
 
-    $insert = $this->post->insert(
-      [
-        'titulo' => $this->request->getPost('title'),
-        'previa' => $this->request->getPost('preview'),
-        'capa' => $url,
-        'data' => date('Y-m-d H:i:s'),
+    $data = [
+        'title' => $this->request->getPost('title'),
+        'preview' => $this->request->getPost('preview'),
+        'cover' => $url,
+        'date' => date('Y-m-d H:i:s'),
         'user' => $_SESSION['user_id'],
-      ]
-    );
+      ];
 
-    if ($insert) {
-
-      $add = $this->user->get($_SESSION['user_id']);
-      $total = $add->numpost + 1;
-      $this->user->userUpdate(['numpost' => $total], $_SESSION['user_id']);
+    if ($postModel->insert($data)) {
+      $add = $userModel->where('user_id', $_SESSION['user_id'])->first();
+      $total = $add->count_post + 1;
+      $userModel->where('user_id', $_SESSION['user_id'])->set(['count_post' => $total])->update();
       $session->setFlashdata('error', 'success');
       $session->setFlashdata('msg', 'Publicação adicionada com sucesso!');
     } else {
       $session->setFlashdata('error', 'danger');
       $session->setFlashdata('msg', 'Não foi possível adicionar a publicação!');
     }
-
-    redirect('publicacoes', 'refresh');
+    return redirect()->to('publicacoes');
   }
 
   public function page_edit($id)

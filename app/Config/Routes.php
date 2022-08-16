@@ -70,8 +70,7 @@ $routes->post('abrir_mensagem', 'Painel::OpenMessage');
 
 // publicações
 $routes->get('publicacoes', 'Painel::publications');
-$routes->get('publicacoes/(:num)', 'Painel::publicacoes/$1');
-$routes->get('post/add', 'Painel::post_add');
+$routes->post('post/add', 'Painel::post_add');
 
 // editar publicação
 $routes->get('publicacao/(:num)', 'Painel::page_edit/$1');
