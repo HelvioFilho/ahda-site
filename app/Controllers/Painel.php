@@ -361,8 +361,8 @@ class Painel extends BaseController
     $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
     $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
 
-    $file = $this->request->getFile('arquivo');
-    if ($file) {
+    if (!empty($_FILES['arquivo']['size'])) {
+      $file = $this->request->getFile('arquivo');
       $url = $postModel->uploadImg($file, 'capa/');
     } else {
       $url = "angel-default.jpg";
@@ -435,13 +435,13 @@ class Painel extends BaseController
     }
     $file = $this->request->getFile('image');
 
-    $url = $postModel->uploadImg($file, 'post/');
+    $url = $postModel->uploadImg($file, 'post/' . $folder);
     echo base_url(['img', 'post', $folder, $url]);
   }
 
   public function save_status()
   {
-    $statusModel = new PostModel();
+    $statusModel = new StatusModel();
 
     $check = $statusModel->where('post_id', $this->request->getPost('id'))->first();
 
@@ -467,11 +467,15 @@ class Painel extends BaseController
   public function page_update($id)
   {
     $session = session();
-    // preparação das variaveis
+    $postModel = new PostModel();
+    $statusModel = new StatusModel();
+
+    // preparation of variables
     $find = base_url(['img', 'post', $id]) . "/";
     $img = explode($find, $this->request->getPost('imagens'));
     array_shift($img);
     $dir = './img/post/' . $id . '/';
+
     if (is_dir($dir)) {
       $directory_iterator = new \RecursiveDirectoryIterator(
         $dir,
@@ -486,32 +490,35 @@ class Painel extends BaseController
       array_shift($imgComp);
       // function of array compare
       for ($i = 0; $i < count($imgComp); $i++) {
-        if (!$this->post->equal($img, $imgComp[$i])) {
+        if (!$postModel->equal($img, $imgComp[$i])) {
           unlink($dir . $imgComp[$i]);
         }
       }
     }
-    $string = $this->request->getPost('title');
-    $string = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $string);
-    $string = preg_replace(array('/[ ]/', '/[^A-Za-z0-9\-]/'), array('', ''), $string);
-    $data['texto'] = $this->request->getPost('editor');
-    $data['titulo'] = $this->request->getPost('title');
-    $data['previa'] = $this->request->getPost('preview');
-    $data['datePost'] = date('Y-m-d H:i:s');
+
+    $data['text'] = $this->request->getPost('editor');
+    $data['title'] = $this->request->getPost('title');
+    $data['preview'] = $this->request->getPost('preview');
+    $data['date_post'] = date('Y-m-d H:i:s');
+
     if (!empty($_FILES['arquivo']['size'])) {
-      $url = $this->post->uploadImg('arquivo', $string);
-      $data['capa'] = $url;
+      $file = $this->request->getFile('arquivo');
+      $url = $postModel->uploadImg($file, 'capa/');
+      $data['cover'] = $url;
     }
-    $update = $this->post->update($data, $id);
+
+    $update = $postModel->where('id', $id)->set($data)->update();
+
     if ($update) {
       $session->setFlashdata('error', 'success');
       $session->setFlashdata('msg', 'Publicação atualizada com sucesso! Agora ela pode ser publicada!');
-      $this->post->deleteStatus($id);
+      $statusModel->delete(['post_id' => $id]);
     } else {
       $session->setFlashdata('error', 'danger');
       $session->setFlashdata('msg', 'Não foi possível atualizar a publicação!');
     }
-    redirect('publicacoes', 'refresh');
+
+    return redirect()->to('publicacoes');
   }
 
   public function post_del($id)

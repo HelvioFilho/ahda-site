@@ -97,7 +97,7 @@
   </div>
 </main>
 <script>
-  let url = "<?= base_url(); ?>",
+  let url = "<?= base_url(); ?>/",
     arqId = "<?= $post->id; ?>",
     caminho = "<?= $post->title; ?>";
 </script>

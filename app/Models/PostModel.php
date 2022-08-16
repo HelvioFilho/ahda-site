@@ -26,4 +26,14 @@ class PostModel extends Model
 
     return $newName;
   }
+
+  public function equal($equal, $compare){
+    foreach($equal as $value){
+      if($value == $compare){
+        return 1;
+      }
+    }
+    return 0;
+  }
+
 }

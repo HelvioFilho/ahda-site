@@ -76,13 +76,13 @@ $routes->post('post/add', 'Painel::post_add');
 $routes->get('publicacao/(:num)', 'Painel::page_edit/$1');
 
 // salvar imagem post
-$routes->get('save/img', 'Painel::save_img');
+$routes->post('save/img', 'Painel::save_img');
 
 // salvar conteúdo automaticamente
-$routes->get('save/status', 'Painel::save_status');
+$routes->post('save/status', 'Painel::save_status');
 
 // salvar a atualização da página
-$routes->get('post/update/(:num)', 'Painel::page_update/$1');
+$routes->post('post/update/(:num)', 'Painel::page_update/$1');
 
 // deletar publicação
 $routes->get('delete_publicacao/(:num)', 'Painel::post_del/$1');
