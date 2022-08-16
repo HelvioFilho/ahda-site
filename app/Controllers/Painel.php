@@ -351,7 +351,7 @@ class Painel extends BaseController
     );
   }
 
-  public function post_add()
+  public function addPost()
   {
     $session = session();
     $postModel = new PostModel();
@@ -389,7 +389,7 @@ class Painel extends BaseController
     return redirect()->to('publicacoes');
   }
 
-  public function page_edit($id)
+  public function pageEdit($id)
   {
     $session = session();
     if (!isset($_SESSION['user_id'])) {
@@ -420,7 +420,7 @@ class Painel extends BaseController
     );
   }
 
-  public function save_img()
+  public function saveImage()
   {
     $postModel = new PostModel();
     // verificar necessidade
@@ -439,7 +439,7 @@ class Painel extends BaseController
     echo base_url(['img', 'post', $folder, $url]);
   }
 
-  public function save_status()
+  public function saveStatus()
   {
     $statusModel = new StatusModel();
 
@@ -464,7 +464,7 @@ class Painel extends BaseController
     echo true;
   }
 
-  public function page_update($id)
+  public function pageUpdate($id)
   {
     $session = session();
     $postModel = new PostModel();
@@ -521,7 +521,7 @@ class Painel extends BaseController
     return redirect()->to('publicacoes');
   }
 
-  public function post_del($id)
+  public function deletePost($id)
   {
     $path = './img/post/' . $id;
     if (is_dir($path)) {
@@ -538,7 +538,7 @@ class Painel extends BaseController
     echo $this->post->delete($id);
   }
 
-  public function publicar()
+  public function publish()
   {
     if ($this->request->getPost('mod') == "Esconder") {
       $update = $this->post->update(['publicar' => 1], $this->request->getPost('id'));
@@ -551,7 +551,7 @@ class Painel extends BaseController
     echo $data;
   }
 
-  public function pub_search($page = 0)
+  public function searchPublication($page = 0)
   {
     $session = session();
     $this->load->library(['pagination']);
@@ -623,7 +623,7 @@ class Painel extends BaseController
     );
   }
 
-  public function update_radio()
+  public function radioUpdate()
   {
     $this->post->radio(['link' => $this->request->getPost('link')]);
   }

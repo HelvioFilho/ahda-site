@@ -70,30 +70,30 @@ $routes->post('abrir_mensagem', 'Painel::OpenMessage');
 
 // publicações
 $routes->get('publicacoes', 'Painel::publications');
-$routes->post('post/add', 'Painel::post_add');
+$routes->post('post/add', 'Painel::addPost');
 
 // editar publicação
-$routes->get('publicacao/(:num)', 'Painel::page_edit/$1');
+$routes->get('publicacao/(:num)', 'Painel::pageEdit/$1');
 
 // salvar imagem post
-$routes->post('save/img', 'Painel::save_img');
+$routes->post('save/img', 'Painel::saveImage');
 
 // salvar conteúdo automaticamente
-$routes->post('save/status', 'Painel::save_status');
+$routes->post('save/status', 'Painel::saveStatus');
 
 // salvar a atualização da página
-$routes->post('post/update/(:num)', 'Painel::page_update/$1');
+$routes->post('post/update/(:num)', 'Painel::pageUpdate/$1');
 
 // deletar publicação
-$routes->get('delete_publicacao/(:num)', 'Painel::post_del/$1');
+$routes->get('delete_publicacao/(:num)', 'Painel::deletePost/$1');
 
 // publicar ou esconder
-$routes->get('publicar', 'Painel::publicar');
+$routes->get('publicar', 'Painel::publish');
 
 // busca na publicação
-$routes->get('publicacoes/busca', 'Painel::pub_search');
+$routes->get('publicacoes/busca', 'Painel::searchPublication');
 $routes->get('publicacoes/busca/(:num)', 'Painel::pub_search/$1');
-$routes->get('alterar_radio', 'Painel::update_radio');
+$routes->get('alterar_radio', 'Painel::radioUpdate');
 
 /*
  * --------------------------------------------------------------------
