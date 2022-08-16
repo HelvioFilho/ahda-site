@@ -294,25 +294,30 @@ class Painel extends BaseController
     );
   }
 
-  public function del_msg($id)
+  public function deleteMessage($id)
   {
-    $data['response'] = $this->msg->delete($id);
-    $data['count'] = $this->msg->countNew();
+    $messageModel = new MessageModel();
+
+    $data['response'] = $messageModel->delete(['id' => $id]);
+    $data['count'] = $messageModel->like('is_read', 0)->countAllResults();
     echo json_encode($data);
   }
 
-  public function marcar_msg_novo()
+  public function markMessage()
   {
-    $data['response'] = $this->msg->update(['confirmation' => 0], $this->request->getPost('id'));
-    $data['count'] = $this->msg->countNew();
+    $messageModel = new MessageModel();
+    
+    $data['response'] = $messageModel->where('id', $this->request->getPost('id'))->set(['is_read' => 0])->update();
+    $data['count'] = $messageModel->like('is_read', 0)->countAllResults();
     echo json_encode($data);
   }
 
-  public function open_msg()
+  public function OpenMessage()
   {
+    $messageModel = new MessageModel();
 
-    $data['response'] = $this->msg->update(['confirmation' => 1], $this->request->getPost('id'));
-    $data['count'] = $this->msg->countNew();
+    $data['response'] = $messageModel->where('id', $this->request->getPost('id'))->set(['is_read' => 1])->update();
+    $data['count'] = $messageModel->like('is_read', 0)->countAllResults();
     echo json_encode($data);
   }
 
