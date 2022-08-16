@@ -68,6 +68,33 @@ $routes->get('delete_mensagem/(:num)', 'Painel::deleteMessage/$1');
 $routes->post('marcar_novo', 'Painel::markMessage');
 $routes->post('abrir_mensagem', 'Painel::OpenMessage');
 
+// publicações
+$routes->get('publicacoes', 'Painel::publications');
+$routes->get('publicacoes/(:num)', 'Painel::publicacoes/$1');
+$routes->get('post/add', 'Painel::post_add');
+
+// editar publicação
+$routes->get('publicacao/(:num)', 'Painel::page_edit/$1');
+
+// salvar imagem post
+$routes->get('save/img', 'Painel::save_img');
+
+// salvar conteúdo automaticamente
+$routes->get('save/status', 'Painel::save_status');
+
+// salvar a atualização da página
+$routes->get('post/update/(:num)', 'Painel::page_update/$1');
+
+// deletar publicação
+$routes->get('delete_publicacao/(:num)', 'Painel::post_del/$1');
+
+// publicar ou esconder
+$routes->get('publicar', 'Painel::publicar');
+
+// busca na publicação
+$routes->get('publicacoes/busca', 'Painel::pub_search');
+$routes->get('publicacoes/busca/(:num)', 'Painel::pub_search/$1');
+$routes->get('alterar_radio', 'Painel::update_radio');
 
 /*
  * --------------------------------------------------------------------
