@@ -92,7 +92,7 @@ $routes->post('publicar', 'Painel::publish');
 
 // busca na publicação
 $routes->post('publicacoes/busca', 'Painel::searchPublication');
-$routes->get('alterar_radio', 'Painel::radioUpdate');
+$routes->post('alterar_radio', 'Painel::radioUpdate');
 
 /*
  * --------------------------------------------------------------------

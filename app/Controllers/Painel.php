@@ -406,7 +406,7 @@ class Painel extends BaseController
     $user = $userModel->findAll();
     $status = $statusModel->where('post_id', $id)->first();
 
-    if(empty($post)){
+    if (empty($post)) {
       $session->setFlashdata('error', 'danger');
       $session->setFlashdata('msg', 'A publicação não existe ou foi apagada!');
       return redirect()->to('publicacoes');
@@ -598,10 +598,10 @@ class Painel extends BaseController
       'text' => $search,
       'preview' => $search
     ];
-    
-    $posts = $postModel->orlike($searchFields)->paginate(3);
+
+    $posts = $postModel->orlike($searchFields)->orderBy('id', 'DESC')->paginate(3);
     $pager = $postModel->pager;
-    
+
     return view(
       'only_page',
       [
@@ -618,7 +618,16 @@ class Painel extends BaseController
 
   public function radioUpdate()
   {
-    $this->post->radio(['link' => $this->request->getPost('link')]);
+    $radioModel = new RadioModel();
+
+    $newData = ['link' => $this->request->getPost('link')];
+    $checkData = $radioModel->where('id', 1)->first();
+    if (!isset($checkData)) {
+      $radioModel->insert($newData);
+    } else {
+      $radioModel->where('id', 1)->set($newData)->update();
+    }
+    echo true;
   }
 
   public function logoff()
