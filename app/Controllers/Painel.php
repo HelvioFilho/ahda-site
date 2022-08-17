@@ -549,11 +549,14 @@ class Painel extends BaseController
 
   public function publish()
   {
+    $postModel = new PostModel();
+    $id = $this->request->getPost('id');
+    
     if ($this->request->getPost('mod') == "Esconder") {
-      $update = $this->post->update(['publicar' => 1], $this->request->getPost('id'));
+      $postModel->where('id', $id)->set(['is_published' => 1])->update();
       $data = "Publicar";
     } else {
-      $update = $this->post->update(['publicar' => 0], $this->request->getPost('id'));
+      $postModel->where('id', $id)->set(['is_published' => 0])->update();
       $data = "Esconder";
     }
 

@@ -88,7 +88,7 @@ $routes->post('post/update/(:num)', 'Painel::pageUpdate/$1');
 $routes->get('delete_publicacao/(:num)', 'Painel::deletePost/$1');
 
 // publicar ou esconder
-$routes->get('publicar', 'Painel::publish');
+$routes->post('publicar', 'Painel::publish');
 
 // busca na publicação
 $routes->get('publicacoes/busca', 'Painel::searchPublication');
