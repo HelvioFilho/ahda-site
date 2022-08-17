@@ -406,6 +406,12 @@ class Painel extends BaseController
     $user = $userModel->findAll();
     $status = $statusModel->where('post_id', $id)->first();
 
+    if(empty($post)){
+      $session->setFlashdata('error', 'danger');
+      $session->setFlashdata('msg', 'A publicação não existe ou foi apagada!');
+      return redirect()->to('publicacoes');
+    }
+
     return view(
       'only_page',
       [
@@ -551,7 +557,7 @@ class Painel extends BaseController
   {
     $postModel = new PostModel();
     $id = $this->request->getPost('id');
-    
+
     if ($this->request->getPost('mod') == "Esconder") {
       $postModel->where('id', $id)->set(['is_published' => 1])->update();
       $data = "Publicar";
@@ -563,74 +569,49 @@ class Painel extends BaseController
     echo $data;
   }
 
-  public function searchPublication($page = 0)
+  public function searchPublication()
   {
     $session = session();
-    $this->load->library(['pagination']);
-    $countMsg = $this->msg->countNew();
+    if (!isset($_SESSION['user_id'])) {
+      return redirect()->to('/');
+    }
+    $userModel = new UserModel();
+    $postModel = new PostModel();
+    $messageModel = new MessageModel();
+
+    $countMsg = $messageModel->like('is_read', 0)->countAllResults();
+    $posts = $postModel->orderBy('id', 'DESC')->paginate(3);
+    $pager = $postModel->pager;
+    $user = $userModel->findAll();
 
     if ($this->request->getPost('busca')) {
-      $busca = $this->request->getPost('busca');
-      $session->set_userdata('search', $this->request->getPost('busca'));
+      $search = $this->request->getPost('busca');
+      $session->set(['search' => $search]);
     } elseif ($_SESSION['search']) {
-      $busca = $_SESSION['search'];
+      $search = $_SESSION['search'];
     } else {
-      redirect(base_url(['publicacoes']), 'refresh');
+      return redirect()->to('publicacoes');
     }
 
-    $config = array(
-      "base_url"       => base_url(['publicacoes', 'busca']),
-      "per_page"       => 5,
-      "num_links"     => 2,
-      "use_page_numbers"   => TRUE,
-      "uri_segment"     => 3,
-      "total_rows"     => $this->post->countSearch($busca),
-    );
-    $config['full_tag_open'] = '<ul class="pagination">';
-    $config['full_tag_close'] = '</ul>';
-    $config['attributes'] = ['class' => 'page-link'];
-    $config['first_link'] = false;
-    $config['last_link'] = false;
-    $config['first_tag_open'] = '<li class="page-item">';
-    $config['first_tag_close'] = '</li>';
-    $config['prev_link'] = '&laquo';
-    $config['prev_tag_open'] = '<li class="page-item">';
-    $config['prev_tag_close'] = '</li>';
-    $config['next_link'] = '&raquo';
-    $config['next_tag_open'] = '<li class="page-item">';
-    $config['next_tag_close'] = '</li>';
-    $config['last_tag_open'] = '<li class="page-item">';
-    $config['last_tag_close'] = '</li>';
-    $config['cur_tag_open'] = '<li class="page-item active"><a href="#" class="page-link">';
-    $config['cur_tag_close'] = '<span class="sr-only">(current)</span></a></li>';
-    $config['num_tag_open'] = '<li class="page-item">';
-    $config['num_tag_close'] = '</li>';
-
-    if ($page !== 0) {
-      $cont = $page - 1;
-      $limite = $cont * 5;
-    } else {
-      $limite = 0;
-    }
-
-    $posts = $this->post->getSearch($config['per_page'], $limite, $busca);
-
-    if ($page != 0) {
-      if (empty($posts)) {
-        redirect(base_url(['publicacoes']), 'refresh');
-      }
-    }
-
-    $user = $this->user->getAll();
-
-    $this->pagination->initialize($config);
-    $this->load->view(
+    $searchFields = [
+      'title' => $search,
+      'text' => $search,
+      'preview' => $search
+    ];
+    
+    $posts = $postModel->orlike($searchFields)->paginate(3);
+    $pager = $postModel->pager;
+    
+    return view(
       'only_page',
       [
-        "call" => "adm/publicacoes",
+        "call" => "adm/publications",
         "posts" => $posts,
         "countMsg" => $countMsg,
         "user" => $user,
+        "pager" => $pager,
+        "session" => $session,
+        "uri" => service('uri'),
       ]
     );
   }

@@ -91,8 +91,7 @@ $routes->get('delete_publicacao/(:num)', 'Painel::deletePost/$1');
 $routes->post('publicar', 'Painel::publish');
 
 // busca na publicação
-$routes->get('publicacoes/busca', 'Painel::searchPublication');
-$routes->get('publicacoes/busca/(:num)', 'Painel::pub_search/$1');
+$routes->post('publicacoes/busca', 'Painel::searchPublication');
 $routes->get('alterar_radio', 'Painel::radioUpdate');
 
 /*
