@@ -65,7 +65,8 @@ class UserModel extends Model
     $session = session();
     $cookie = get_cookie('is_logged_in');
     $user = $this->where('is_logged_in', $cookie)->first();
-    $this->where('email', $user->email)->set('is_logged_in', '')->update();
+    if($user)
+      $this->where('email', $user->email)->set('is_logged_in', '')->update();
 
     $newdata = [
       'usuario_logado',
