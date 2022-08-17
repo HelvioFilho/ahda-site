@@ -36,4 +36,12 @@ class PostModel extends Model
     return 0;
   }
 
+  public function clearPostImage($dir){
+    $files = array_diff(scandir($dir), array('.','..'));
+    foreach ($files as $file) { 
+			(is_dir($dir."/".$file)) ? $this->clearPostImage($dir."/".$file) : unlink($dir."/".$file); 
+		} 
+		return rmdir($dir); 
+  }
+
 }

@@ -191,7 +191,7 @@ class Painel extends BaseController
     if ($dados->img) {
       unlink("img/user/" . $dados->img);
     }
-    echo $userModel->delete(['id' => $del]);
+    echo $userModel->where('id', $del)->delete();
   }
 
   public function updated_access()
@@ -299,7 +299,7 @@ class Painel extends BaseController
   {
     $messageModel = new MessageModel();
 
-    $data['response'] = $messageModel->delete(['id' => $id]);
+    $data['response'] = $messageModel->where('id', $id)->delete();
     $data['count'] = $messageModel->like('is_read', 0)->countAllResults();
     echo json_encode($data);
   }
@@ -512,7 +512,7 @@ class Painel extends BaseController
     if ($update) {
       $session->setFlashdata('error', 'success');
       $session->setFlashdata('msg', 'Publicação atualizada com sucesso! Agora ela pode ser publicada!');
-      $statusModel->delete(['post_id' => $id]);
+      $statusModel->where('post_id', $id)->delete();
     } else {
       $session->setFlashdata('error', 'danger');
       $session->setFlashdata('msg', 'Não foi possível atualizar a publicação!');
@@ -523,19 +523,28 @@ class Painel extends BaseController
 
   public function deletePost($id)
   {
+    $postModel = new PostModel();
+    $statusModel = new StatusModel();
+    $userModel = new UserModel();
+
     $path = './img/post/' . $id;
     if (is_dir($path)) {
-      $this->post->delTree('./img/post/' . $id);
+      $postModel->clearPostImage('./img/post/' . $id);
     }
-    $this->post->deleteStatus($id);
-    $post = $this->post->get($id);
-    if ($post->capa !== "angel-default.jpg") {
-      unlink("./img/capa/" . $post->capa);
+    $statusModel->where('post_id', $id)->delete();
+
+    $post = $postModel->where('id', $id)->first();
+    if ($post->cover !== "angel-default.jpg") {
+      unlink("./img/capa/" . $post->cover);
     }
-    $add = $this->user->get($_SESSION['user_id']);
-    $total = $add->numpost - 1;
-    $this->user->userUpdate(['numpost' => $total], $_SESSION['user_id']);
-    echo $this->post->delete($id);
+
+    $add = $userModel->where('user_id', $post->user)->first();
+    if ($add) {
+      $total = $add->count_post - 1;
+      $userModel->where('user_id', $post->user)->set(['count_post' => $total])->update();
+    }
+
+    echo $postModel->where('id', $id)->delete();
   }
 
   public function publish()
