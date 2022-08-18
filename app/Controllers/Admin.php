@@ -72,7 +72,7 @@ class Admin extends BaseController
     }
   }
 
-  public function recuperar_senha($chave = null, $id = null)
+  public function changePassword($chave = null, $id = null)
   {
     $session = session();
     $userModel = new UserModel();
@@ -85,7 +85,7 @@ class Admin extends BaseController
       if (isset($infor)) {
         if ($clava[0] === url_title($infor->passwd)) {
           return view(
-            'recuperar_senha',
+            'recoverPassword',
             [
               'infor' => $infor,
             ]
@@ -102,11 +102,12 @@ class Admin extends BaseController
       $userModel->where('user_id',$this->request->getPost('id'))->set(
         [
           'passwd' => password_hash($this->request->getPost('senha'), PASSWORD_DEFAULT),
-          'passwd_modificado' => date('Y-m-d H:i:s'),
+          'passwd_changed_at' => date('Y-m-d H:i:s'),
         ]
       )->update();
       echo true;
     } else {
+      $session->setFlashdata('msg', 'Algo deu errado e não foi possível atualizar a senha, se o problema persistir entre em contato com um administrador!');
       return redirect()->to('/');
     }
   }

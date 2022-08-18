@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>A Hora do Anjo</title>
-	<link rel="shortcut icon" type="image/x-icon" href="<?=base_url(['icone','angel.svg']) ?>">
+	<link rel="shortcut icon" type="image/x-icon" href="<?=base_url(['icon','angel.svg']) ?>">
 	<link rel="stylesheet" type="text/css" href="<?=base_url(['assets','css','bootstrap.css']) ?>">
 	<link rel="stylesheet" type="text/css" href="<?=base_url(['assets','css','adm-index.css']) ?>">
 </head>
@@ -12,7 +12,7 @@
 	<main class="form-change">
 		<form>
 			<div class="text-center">
-			    <img class="mb-3 own" src="<?=base_url(['icone','angel.svg']) ?>" alt="" width="72" height="57">
+			    <img class="mb-3 own" src="<?=base_url(['icon','angel.svg']) ?>" alt="" width="72" height="57">
 			    <h1 class="h3 mb-3 fw-normal">Alterar senha</h1>
 			</div>
 			<div id="campo_1" class="form-floating">
