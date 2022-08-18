@@ -9,8 +9,8 @@ class Admin extends BaseController
   
   public function verificarUser()
   {
-    $useModel = new UserModel();
-    $login = $useModel->where('email',strtolower($this->request->getPost('login')))->first();
+    $userModel = new UserModel();
+    $login = $userModel->where('email',strtolower($this->request->getPost('login')))->first();
     if(isset($login)){
       echo 'true';
     }else{
@@ -20,14 +20,14 @@ class Admin extends BaseController
 
   public function logIn()
   {
-    $useModel = new UserModel();
-    $login = $useModel->where('email',strtolower($this->request->getPost('login')))->first();
+    $userModel = new UserModel();
+    $login = $userModel->where('email',strtolower($this->request->getPost('login')))->first();
     if (!isset($login)) {
       echo "login";
     } elseif (!password_verify($this->request->getPost('pss'), $login->passwd)) {
       echo "senha";
     } else {
-      $verificar = $useModel->logged($login, $this->request->getPost('box'));
+      $verificar = $userModel->logged($login, $this->request->getPost('box'));
       if ($verificar) {
         echo "logado";
       } else {
@@ -38,7 +38,7 @@ class Admin extends BaseController
 
   public function criar_adm()
   {
-    $useModel = new UserModel();
+    $userModel = new UserModel();
     $gera = mt_rand(1, 9999);
     $alt = [
       'user_id' => $gera,
@@ -49,7 +49,7 @@ class Admin extends BaseController
       'criacao' => date('Y-m-d H:i:s')
     ];
 
-    $inserir = $useModel->inserir($alt);
+    $inserir = $userModel->inserir($alt);
     if ($inserir) {
       echo "Usuário admin criado com sucesso";
     } else {
@@ -57,10 +57,19 @@ class Admin extends BaseController
     }
   }
 
-  public function recuperar_email()
+  public function recoverPassword()
   {
-    $useModel = new UserModel();
-    echo $useModel->recuperarEmail($this->request->getPost('email'));
+    
+    $userModel = new UserModel();
+    $email = $this->request->getPost('email');
+    
+    $user = $userModel->where('email', $email)->first();
+    
+    if(isset($user)){
+      $userModel->sendEmail($user);
+    }else{
+      echo "false";
+    }
   }
 
   public function recuperar_senha($chave = null, $id = null)

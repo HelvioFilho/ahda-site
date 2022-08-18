@@ -83,29 +83,28 @@ class UserModel extends Model
   {
     $email = \Config\Services::email();
 
-    $nome = ucfirst($login->username);
     $destinatario =  $login->email;
     $binario = mt_rand(100000, 900000);
     $serial = url_title($login->passwd);
-
+    
     $config['protocol']  = 'smtp';
-    $config['smtp_host'] = 'smtp.hostinger.com.br';
-    $config['smtp_user'] = $_ENV['SMTP_USER'];
-    $config['smtp_pass'] = $_ENV['SMTP_PASS'];
-    $config['smtp_port'] = 587;
-    $config['wordwrap'] = TRUE; // define se haverá quebra de palavra no texto
+    $config['SMTPHost'] = 'smtp.hostinger.com.br';
+    $config['SMTPUser'] = $_ENV['SMTP_USER'];
+    $config['SMTPPass'] = $_ENV['SMTP_PASS'];
+    $config['SMTPPort'] = 587;
+    $config['wordWrap'] = TRUE; // define se haverá quebra de palavra no texto
     $config['validate'] = TRUE; // define se haverá validação dos endereços de email
-    $config['mailtype'] = 'html';
+    $config['mailType'] = 'html';
     $config['charset']   = 'utf-8';
 
     // adaptação
     $linkRec = base_url(['adm', 'recuperar_senha', $serial . 'Q1T1Q' . $binario, 'aoijibSAD' . $binario . 'Q1T1Q' . $login->user_id]);
     $email->initialize($config);
     $email->setFrom('suporte@hsvf.com.br', 'Suporte Admin'); // Remetente
-    $email->setTo($destinatario, $nome); // Destinatário
+    $email->setTo($destinatario); // Destinatário
     $email->setSubject("Pedido de redefinição de senha no ADM"); //esolha do assunto
     $email->attach('./img/anjo-branco.png');
-    $logo =  $email->setAttachmentCID('./img/anjo-branco.png');
+    $logo = $email->setAttachmentCID('./img/anjo-branco.png');
     $email->setMessage(view(
       'email',
       [
@@ -113,8 +112,13 @@ class UserModel extends Model
         "link" => $linkRec,
         "logo" => $logo,
       ]
-    )); //texto de mensagem
-    return $this->email->send();
+    ));
+    if($email->send()){
+      $this->where('email', $login->email)->set(['recovered_at' => date('Y-m-d H:i:s')])->update();
+      echo "ok";
+    }else{
+      echo "false";
+    }
   }
 
   public function recuperarEmail($email)
