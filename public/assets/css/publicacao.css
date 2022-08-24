@@ -26,7 +26,7 @@
 	border:solid 1px gray;
 }
 #editorcontainer{
-	height:70vh; 
+	height:60vh; 
 	min-height:100%; 
 	overflow-y:auto;
 	margin-top:3rem;
