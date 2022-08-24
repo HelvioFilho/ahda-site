@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\ImageModel;
 use App\Models\MessageModel;
 use App\Models\PostModel;
 use App\Models\RadioModel;
@@ -614,6 +615,35 @@ class Painel extends BaseController
         "uri" => service('uri'),
       ]
     );
+  }
+
+  public function addCarousel(){
+    $session = session();
+    $imageModel = new ImageModel();
+    $postModel = new PostModel();
+    $folder = $this->request->getPost('id');
+    $file = $this->request->getFile('arquivoCarousel');
+
+    $uploaddir = './img/post/' . $folder;
+    if (!is_dir($uploaddir)) {
+      mkdir($uploaddir, 0777);
+    }
+    
+    $url = $postModel->uploadImg($file, 'post/' . $folder);
+    $data = [
+      "path" => "/post"."/".$folder."/".$url,
+      "post_id" => $folder
+    ];
+
+    if ($imageModel->insert($data)) {
+      $session->setFlashdata('error', 'success');
+      $session->setFlashdata('msg', 'Imagem adicionada com sucesso!');
+    } else {
+      $session->setFlashdata('error', 'danger');
+      $session->setFlashdata('msg', 'Algo deu errado e não foi possível adicionar a imagem!');
+    }
+
+    return redirect()->to('publicacao/'.$folder);
   }
 
   public function radioUpdate()

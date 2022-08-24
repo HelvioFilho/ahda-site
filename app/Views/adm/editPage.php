@@ -19,13 +19,14 @@
     <div class="col-md-2">
     </div>
     <div class="col-md-8 col-lg-8">
-      <br>  
+      <br>
       <h4 class="mb-3 text-primary">Carrossel de Imagens</h4>
       <div class="card p-2">
-      <style>
+        <style>
           .image_error {
             color: red;
-            visibility: hidden
+            visibility: hidden;
+            text-align: center;
           }
 
           .carousel-item img {
@@ -37,13 +38,13 @@
           .delete {
             position: absolute;
             top: 0px;
-            right: 20%;
+            right: 25.8%;
             text-decoration: none;
           }
         </style>
         <div class="col-sm-12">
           <br>
-          <form id="form-img" class="ups" action='<?= base_url(['painel', 'add_carousel']) ?>' method="post" enctype="multipart/form-data">
+          <form id="form-img" class="ups" action='<?= base_url(['add_carousel']) ?>' method="post" enctype="multipart/form-data">
             <div class="d-flex justify-content-center align-items-center">
               <input class="file-carousel-chooser item-image" name="arquivoCarousel" type="file" accept="image/*" hidden>
               <div class="p-2 d-flex align-items-end">
@@ -54,9 +55,20 @@
                 </div>
               </div>
             </div>
-            <span class="image_error">* Imagem não pode ser vazia.</span>
+            <div class="d-flex justify-content-center align-items-center">
+              <span class="image_error">* Imagem não pode ser vazia.</span>
+            </div>
           </form>
-          <br><br>
+          <?php if ($session->getFlashdata('error')) : ?>
+            <?= ($session->getFlashdata('error') === "success") ? '<div class="alert alert-success alert-dismissible fade show" role="alert">
+              ' . $session->getFlashdata('msg') . '
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>' :  '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+              ' . $session->getFlashdata('msg') . '
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>'; ?>
+          <?php endif; ?>
+          <br>
           <div id="carouselExampleControls" class="carousel slide carousel-dark d-flex justify-content-center align-items-center" data-bs-interval="false" data-bs-ride="carousel">
             <div class="carousel-inner">
               <div class="carousel-item active">
@@ -89,6 +101,8 @@
           </div>
         </div>
       </div>
+      <br>
+      <br>
       <br>
       <h4 class="mb-3 text-primary">Publicação</h4>
       <div class="card p-2">
