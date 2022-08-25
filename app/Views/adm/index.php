@@ -47,6 +47,7 @@
           <span class="text-primary">Últimas Mensagens</span>
           <span id="pill-count" class="badge bg-primary rounded-pill bg-msg"><?=$countMsg;?></span>
         </h4>
+        <?php if (count($mensagens) > 0) : ?>
         <ul class="list-group mb-3">
           <?php foreach ($mensagens as $msg):?>
           <li id="c<?=$msg->id?>"
@@ -95,9 +96,15 @@
           </li>
           <?php endforeach; ?>
         </ul>
+        <?php else : ?>
+          <div class="padding d-flex align-items-center justify-content-center">
+            <h4>Ainda não há mensagens!</h4>
+          </div>
+        <?php endif; ?>
       </div>
       <div class="col-md-7 col-lg-8">
         <h4 class="mb-3 text-primary">Últimas publicações</h4>
+        <?php if (count($posts) > 0) : ?>
       <?php foreach ($posts as $post):?>
         <div id="mm<?=$post->id?>" class="card p-2" >
       <div class="col-md-12 d-flex justify-content-center">
@@ -180,6 +187,11 @@
       </span>
         </div>
       <?php endforeach; ?>
+      <?php else : ?>
+          <div class="padding d-flex align-items-center">
+            <h4>Ainda não existe nenhuma postagem!</h4>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
 </main>
