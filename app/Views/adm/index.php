@@ -189,7 +189,7 @@
       <?php endforeach; ?>
       <?php else : ?>
           <div class="padding d-flex align-items-center">
-            <h4>Ainda não existe nenhuma postagem!</h4>
+            <h4>Ainda não existe nenhuma publicação!</h4>
           </div>
         <?php endif; ?>
       </div>
