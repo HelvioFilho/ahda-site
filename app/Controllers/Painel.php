@@ -401,6 +401,7 @@ class Painel extends BaseController
     $messageModel = new MessageModel();
     $postModel = new PostModel();
     $statusModel = new StatusModel();
+    $imageModel = new ImageModel();
 
     $countMsg = $messageModel->like('is_read', 0)->countAllResults();
     $post = $postModel->where('id', $id)->first();
@@ -413,6 +414,8 @@ class Painel extends BaseController
       return redirect()->to('publicacoes');
     }
 
+    $imageCarousel = $imageModel->where('post_id', $id)->findAll();
+
     return view(
       'only_page',
       [
@@ -421,6 +424,7 @@ class Painel extends BaseController
         "countMsg" => $countMsg,
         "user" => $user,
         "status" => $status,
+        "imageCarousel" => $imageCarousel,
         "session" => $session,
         "uri" => service('uri'),
       ]

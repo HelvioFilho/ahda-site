@@ -69,36 +69,35 @@
               </div>'; ?>
           <?php endif; ?>
           <br>
-          <div id="carouselExampleControls" class="carousel slide carousel-dark d-flex justify-content-center align-items-center" data-bs-interval="false" data-bs-ride="carousel">
-            <div class="carousel-inner">
-              <div class="carousel-item active">
-                <img src="<?= base_url(['img', 'capa', 'capaoutravezagoraaultimaserio2557.jpg']) ?>" class="d-block" alt="...">
-                <button class="btn btn-danger delete" title="Deletar Imagem" data-id="1" type="button">
-                  <i class="far fa-trash-alt"></i>
-                </button>
+          <?php
+            $kImage = 0;
+          ?>
+          <?php if (count($imageCarousel) > 0) : ?>
+            <div id="carouselExampleControls" class="carousel slide carousel-dark d-flex justify-content-center align-items-center" data-bs-interval="false" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <?php foreach ($imageCarousel as $image): ?>
+                <div class="carousel-item <?= $kImage === 0 ? 'active' : ''?>">
+                  <?php $kImage++; ?>
+                  <img src="<?= base_url(['img', $image->path]) ?>" class="d-block">
+                  <button class="btn btn-danger delete" title="Deletar Imagem" data-id="<?= $image->id ?>" type="button">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </div>
+                <?php endforeach; ?>
               </div>
-              <div class="carousel-item">
-                <img src="<?= base_url(['img', 'capa', 'capaoutrotituloparanaoficarrepetitivo8811.jpeg']) ?>" class="d-block" alt="...">
-                <button class="btn btn-danger delete" title="Deletar Imagem" data-id="2" type="button">
-                  <i class="far fa-trash-alt"></i>
+              <?php if (count($imageCarousel) > 1) : ?>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
                 </button>
-              </div>
-              <div class="carousel-item">
-                <img src="<?= base_url(['img', 'capa', 'TituloAcaiemangairmao6008.jpg']) ?>" class="d-block" alt="...">
-                <button class="btn btn-danger delete" title="Deletar Imagem" data-id="3" type="button">
-                  <i class="far fa-trash-alt"></i>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
                 </button>
-              </div>
+              <?php endif; ?>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
+          <?php endif; ?>
+          <!-- fim carousel -->
         </div>
       </div>
       <br>
