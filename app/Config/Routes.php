@@ -93,6 +93,7 @@ $routes->post('publicar', 'Painel::publish');
 // busca na publicação
 $routes->post('publicacoes/busca', 'Painel::searchPublication');
 $routes->post('alterar_radio', 'Painel::radioUpdate');
+$routes->get('publicacoes/busca', 'Painel::searchPublication');
 
 // carrossel de Imagens
 $routes->post('add_carousel', 'Painel::addCarousel');

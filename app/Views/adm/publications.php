@@ -39,7 +39,6 @@
                 <div class="col-sm-6 d-flex  justify-content-center align-items-center">
                   <input class="file-chooser item-image" name="arquivo" type="file" accept="image/*" hidden>
                   <div class="file-button p-2 btnImage"><i class="fas fa-plus-circle"></i> Selecionar Imagem</div>
-
                 </div>
                 <div class="col-sm-6">
                   <label for="preview" class="form-label">Prévia</label>
@@ -69,7 +68,6 @@
 		    			fade show" role="alert">
             <?= $session->getFlashdata('msg') ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-
             </button>
           </div>
         <?php endif; ?>
@@ -91,84 +89,89 @@
         </div>
       </div>
       <br>
-      <!-- imprementar a busca -->
       <div id="search_field">
         <?php if ($uri->getSegment(2) == "busca" && empty($posts)) : ?>
           <div class="padding d-flex align-items-center justify-content-center">
             <h3>Nenhum resultado encontrado!</h3>
           </div>
         <?php endif; ?>
-        <?php foreach ($posts as $post) : ?>
-          <div id="c<?= $post->id ?>" class="card p-2">
-            <div class="col-md-12 d-flex justify-content-center">
-              <div class="card p-2 card-img" style="width: 100%;">
-                <img class="preview-img" src="<?= base_url(['img', 'capa', $post->cover]) ?>">
+        <?php if (count($posts) > 0) : ?>
+          <?php foreach ($posts as $post) : ?>
+            <div id="c<?= $post->id ?>" class="card p-2">
+              <div class="col-md-12 d-flex justify-content-center">
+                <div class="card p-2 card-img" style="width: 100%;">
+                  <img class="preview-img" src="<?= base_url(['img', 'capa', $post->cover]) ?>">
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <b>Título: </b>
-                <p class="text-muted"><?= $post->title; ?></p>
-              </div>
-              <div class="col-md-12">
-                <b>Prévia: </b>
-                <p class="text-muted"><?= mb_strimwidth($post->preview, 0, 50, "..."); ?></p>
-              </div>
-              <div class="col-md-12">
-                <b>Criador por:</b>
-                <p class="text-muted">
-                  <?php foreach ($user as $us) : ?>
-                    <?= $us->user_id == $post->user ? $us->username : '' ?>
-                  <?php endforeach; ?>
-                </p>
-              </div>
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-5 data-padding">
-                    <small><b>Data:</b> <span class="text-muted"><?= date('d/m/Y H:i', strtotime($post->date)) ?></span></small>
-                  </div>
-                  <div class="col-md-7 d-flex justify-content-end">
-                    <div class="btn-control">
-                      <button class="btn btn-outline-danger exc-pub" title="Deletar Postagem" data-id="<?= $post->id ?>" type="button">
-                        <i class="far fa-trash-alt"></i>
-                      </button>
-                      <a href="<?= base_url(['publicacao', $post->id]) ?>" class="	btn 
+              <div class="row">
+                <div class="col-md-12">
+                  <b>Título: </b>
+                  <p class="text-muted"><?= $post->title; ?></p>
+                </div>
+                <div class="col-md-12">
+                  <b>Prévia: </b>
+                  <p class="text-muted"><?= mb_strimwidth($post->preview, 0, 50, "..."); ?></p>
+                </div>
+                <div class="col-md-12">
+                  <b>Criador por:</b>
+                  <p class="text-muted">
+                    <?php foreach ($user as $us) : ?>
+                      <?= $us->user_id == $post->user ? $us->username : '' ?>
+                    <?php endforeach; ?>
+                  </p>
+                </div>
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-5 data-padding">
+                      <small><b>Data:</b> <span class="text-muted"><?= date('d/m/Y H:i', strtotime($post->date)) ?></span></small>
+                    </div>
+                    <div class="col-md-7 d-flex justify-content-end">
+                      <div class="btn-control">
+                        <button class="btn btn-outline-danger exc-pub" title="Deletar Postagem" data-id="<?= $post->id ?>" type="button">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                        <a href="<?= base_url(['publicacao', $post->id]) ?>" class="	btn 
 											btn-outline-info 
 											">
-                        Editar
-                      </a>
+                          Editar
+                        </a>
 
-                      <?php
-                      if (!empty($post->text) && $post->is_published == 0) {
-                        $btn = "btn-outline-success";
-                        $mod = "Esconder";
-                        $text = "Publicar";
-                      } elseif (!empty($post->text) && $post->is_published == 1) {
-                        $btn = "btn-outline-danger";
-                        $mod = "Publicar";
-                        $text = "Esconder";
-                      } else {
-                        $btn = "hide";
-                        $mod = "";
-                        $text = "";
-                      }
-                      ?>
-                      <button id="pub<?= $post->id ?>" class="	btn 
+                        <?php
+                        if (!empty($post->text) && $post->is_published == 0) {
+                          $btn = "btn-outline-success";
+                          $mod = "Esconder";
+                          $text = "Publicar";
+                        } elseif (!empty($post->text) && $post->is_published == 1) {
+                          $btn = "btn-outline-danger";
+                          $mod = "Publicar";
+                          $text = "Esconder";
+                        } else {
+                          $btn = "hide";
+                          $mod = "";
+                          $text = "";
+                        }
+                        ?>
+                        <button id="pub<?= $post->id ?>" class="	btn 
 				            				<?= $btn; ?>
 				            				alt-pub
 				            				" data-id="<?= $post->id ?>" data-mod="<?= $mod; ?>" type="button">
-                        <?= $text; ?>
-                      </button>
+                          <?= $text; ?>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <br>
+              <span id="e<?= $post->id ?>">
+              </span>
             </div>
-            <br>
-            <span id="e<?= $post->id ?>">
-            </span>
+          <?php endforeach; ?>
+        <?php else : ?>
+          <div class="padding d-flex align-items-center justify-content-center">
+            <h3>Ainda não existe nenhuma postagem!</h3>
           </div>
-        <?php endforeach; ?>
+        <?php endif; ?>
       </div>
     </div>
   </div>
