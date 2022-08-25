@@ -79,12 +79,14 @@
             <h4 class="mb-3 text-primary">Publicações</h4>
           </div>
           <div class="col-md-8">
+            <?php if(count($posts) > 4): ?>
             <form action="<?= base_url(['publicacoes', 'busca']) ?>" method="post" accept-charset="utf-8">
               <div class="d-flex justify-content-end">
                 <input class="form-control search" name="busca" type="search" placeholder="Busca" aria-label="Search" value="<?= (isset($_SESSION['search'])) ? $_SESSION['search'] : "" ?>" required>
                 <button class="btn btn-outline-success btn-search" type="submit">Procurar</button>
               </div>
             </form>
+            <?php endif; ?>
           </div>
         </div>
       </div>
