@@ -11,6 +11,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+          <button id="confirmar" data-id="" type="button" class="btn btn-success">Confirmar</button>
         </div>
       </div>
     </div>
@@ -70,19 +71,19 @@
           <?php endif; ?>
           <br>
           <?php
-            $kImage = 0;
+          $kImage = 0;
           ?>
           <?php if (count($imageCarousel) > 0) : ?>
             <div id="carouselExampleControls" class="carousel slide carousel-dark d-flex justify-content-center align-items-center" data-bs-interval="false" data-bs-ride="carousel">
               <div class="carousel-inner">
-                <?php foreach ($imageCarousel as $image): ?>
-                <div class="carousel-item <?= $kImage === 0 ? 'active' : ''?>">
-                  <?php $kImage++; ?>
-                  <img src="<?= base_url(['img', $image->path]) ?>" class="d-block">
-                  <button class="btn btn-danger delete" title="Deletar Imagem" data-id="<?= $image->id ?>" type="button">
-                    <i class="far fa-trash-alt"></i>
-                  </button>
-                </div>
+                <?php foreach ($imageCarousel as $image) : ?>
+                  <div class="carousel-item <?= $kImage === 0 ? 'active' : '' ?>">
+                    <?php $kImage++; ?>
+                    <img src="<?= base_url(['img', $image->path]) ?>" class="d-block">
+                    <button class="btn btn-danger delete" title="Deletar Imagem" data-id="<?= $image->id ?>" type="button">
+                      <i class="far fa-trash-alt"></i>
+                    </button>
+                  </div>
                 <?php endforeach; ?>
               </div>
               <?php if (count($imageCarousel) > 1) : ?>
@@ -97,6 +98,9 @@
               <?php endif; ?>
             </div>
           <?php endif; ?>
+          <form id="delete-image" method="post" action="<?= base_url(['delete_carousel', $post->id]) ?>">
+            <input type="hidden" name="id" id="delete-value" />
+          </form>
           <!-- fim carousel -->
         </div>
       </div>
@@ -185,18 +189,4 @@
   let url = "<?= base_url(); ?>/",
     arqId = "<?= $post->id; ?>",
     caminho = "<?= $post->title; ?>";
-
-  let classImage = document.getElementsByClassName('delete')
-
-  Array.from(classImage).forEach(function(item) {
-    item.addEventListener('click', function(e) {
-      e.preventDefault();
-      let n = this.dataset.id;
-      console.log(n);
-    });
-    // this.addEventListener('click', function(e){
-    //   let n = this.dataset.id;
-    //   console.log(n);
-    // });
-  });
 </script>

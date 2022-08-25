@@ -537,6 +537,7 @@ class Painel extends BaseController
     $postModel = new PostModel();
     $statusModel = new StatusModel();
     $userModel = new UserModel();
+    $imageModel = new ImageModel();
 
     $path = './img/post/' . $id;
     if (is_dir($path)) {
@@ -554,6 +555,8 @@ class Painel extends BaseController
       $total = $add->count_post - 1;
       $userModel->where('user_id', $post->user)->set(['count_post' => $total])->update();
     }
+
+    $imageModel->where('post_id', $id)->delete();
 
     echo $postModel->where('id', $id)->delete();
   }
@@ -621,7 +624,8 @@ class Painel extends BaseController
     );
   }
 
-  public function addCarousel(){
+  public function addCarousel()
+  {
     $session = session();
     $imageModel = new ImageModel();
     $postModel = new PostModel();
@@ -632,10 +636,10 @@ class Painel extends BaseController
     if (!is_dir($uploaddir)) {
       mkdir($uploaddir, 0777);
     }
-    
+
     $url = $postModel->uploadImg($file, 'post/' . $folder);
     $data = [
-      "path" => "/post"."/".$folder."/".$url,
+      "path" => "/post" . "/" . $folder . "/" . $url,
       "post_id" => $folder
     ];
 
@@ -647,7 +651,29 @@ class Painel extends BaseController
       $session->setFlashdata('msg', 'Algo deu errado e não foi possível adicionar a imagem!');
     }
 
-    return redirect()->to('publicacao/'.$folder);
+    return redirect()->to('publicacao/' . $folder);
+  }
+
+  public function deleteCarousel($folder)
+  {
+    $session = session();
+    $imageModel = new ImageModel();
+    $id = $this->request->getPost('id');
+
+    $image = $imageModel->where('id', $id)->first();
+    if ($image) {
+      unlink("./img" . $image->path);
+    }
+
+    if ($imageModel->where('id', $id)->delete()) {
+      $session->setFlashdata('error', 'success');
+      $session->setFlashdata('msg', 'Imagem deletada com sucesso!');
+    } else {
+      $session->setFlashdata('error', 'danger');
+      $session->setFlashdata('msg', 'Algo deu errado e não foi possível deletar a imagem!');
+    }
+
+    return redirect()->to('publicacao/' . $folder);
   }
 
   public function radioUpdate()

@@ -1,5 +1,6 @@
 window.onload = function () {
 	let contador = document.querySelector('#preview').value,
+		classImage = document.getElementsByClassName('delete'),
 		myModal = new bootstrap.Modal(document.getElementById("alertModal"), {}),
 		limite = 300;
 	document.querySelector('.caracteres').innerHTML = limite - contador.length;
@@ -19,6 +20,7 @@ window.onload = function () {
 			extPermitidas = ['jpg', 'png', 'jpeg', 'jpe'];
 		if (typeof extPermitidas.find(function (ext) { return extArquivo == ext; }) == 'undefined') {
 			document.querySelector('.modal-body').innerHTML = "<p class='error'>Tipo de arquivo inválido, só são aceitas imagens do tipo: <br> <b>jpg</b>, <b>jpe</b>, <b>jpeg</b> e <b>png</b>!</p>";
+			document.getElementById('confirmar').style.display = 'none';
 			myModal.show();
 		} else {
 			const reader = new FileReader();
@@ -38,6 +40,7 @@ window.onload = function () {
 				extPermitidas = ['jpg', 'png', 'jpeg', 'jpe'];
 			if (typeof extPermitidas.find(function (ext) { return extArquivo == ext; }) == 'undefined') {
 				document.querySelector('.modal-body').innerHTML = "<p class='error'>Tipo de arquivo inválido, só são aceitas imagens do tipo: <br> <b>jpg</b>, <b>jpe</b>, <b>jpeg</b> e <b>png</b>!</p>";
+				document.getElementById('confirmar').style.display = 'none';
 				myModal.show();
 			} else {
 				let avatar = document.getElementsByClassName('image_error');
@@ -49,7 +52,25 @@ window.onload = function () {
 		}
 	};
 
+	Array.from(classImage).forEach(function (item) {
+		item.addEventListener('click', function (e) {
+			e.preventDefault();
 
+			let confirmar = document.getElementById("confirmar");
+
+			document.querySelector(".modal-body").innerHTML = "Tem certeza que deseja apagar essa imagem?</br> Essa ação não pode ser desfeita!";
+			confirmar.dataset.id = this.dataset.id;
+
+			myModal.show();
+
+		});
+	});
+
+	document.getElementById("confirmar").addEventListener('click', function (e) {
+		myModal.hide();
+		document.getElementById('delete-value').value = this.dataset.id;
+		document.getElementById('delete-image').submit();
+	});
 
 	var toolbarOptions =
 		[
@@ -63,6 +84,7 @@ window.onload = function () {
 			[{ 'color': [] }],
 			['link', 'image'],
 		];
+
 	let quill = new Quill('#quill-editor', {
 		modules: {
 			'history': {
@@ -74,6 +96,7 @@ window.onload = function () {
 		scrollingContainer: "#editorcontainer",
 		theme: 'snow'
 	});
+
 	function selectLocalImage() {
 		const input = document.createElement('input');
 		input.setAttribute('type', 'file');
@@ -84,12 +107,14 @@ window.onload = function () {
 				extPermitidas = ['jpg', 'png', 'jpeg', 'jpe'];
 			if (typeof extPermitidas.find(function (ext) { return extArquivo == ext; }) == 'undefined') {
 				document.querySelector('.modal-body').innerHTML = "<p class='error'>Tipo de arquivo inválido, só são aceitas imagens do tipo: <br> <b>jpg</b>, <b>jpe</b>, <b>jpeg</b> e <b>png</b>!</p>";
+				document.getElementById('confirmar').style.display = 'none';
 				myModal.show();
 			} else {
 				saveToServer(file);
 			}
 		};
 	}
+
 	function saveToServer(file) {
 		const fd = new FormData();
 		fd.append('image', file);
@@ -105,13 +130,16 @@ window.onload = function () {
 		};
 		xhr.send(fd);
 	}
+
 	function insertToEditor(url) {
 		const range = quill.getSelection();
 		quill.insertEmbed(range.index, 'image', url);
 	}
+
 	quill.getModule('toolbar').addHandler('image', () => {
 		selectLocalImage();
 	});
+
 	let statusTimeout;
 	document.querySelector('.ql-editor').addEventListener('keyup', function (e) {
 		clearTimeout(statusTimeout);
@@ -136,6 +164,7 @@ window.onload = function () {
 			}
 		}, 3000);
 	});
+
 	document.getElementById('enviarTudo').onclick = function (event) {
 		event.preventDefault();
 		let editor = document.querySelector('input[name=editor]'),

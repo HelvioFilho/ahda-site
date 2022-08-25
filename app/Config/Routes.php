@@ -96,7 +96,7 @@ $routes->post('alterar_radio', 'Painel::radioUpdate');
 
 // carrossel de Imagens
 $routes->post('add_carousel', 'Painel::addCarousel');
-
+$routes->post('delete_carousel/(:num)', 'Painel::deleteCarousel/$1');
 
 /*
  * --------------------------------------------------------------------
