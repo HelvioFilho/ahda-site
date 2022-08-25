@@ -162,9 +162,6 @@ class UserModel extends Model
         $data["status"] = true;
         $data["message"] = "Você foi desativado e perdeu o acesso ao sistema!";
       }
-    }else{
-      $data["status"] = true;
-      $data["message"] = "Parece que você não está logado no sistema!";
     }
 
     if($data["status"] === true){
