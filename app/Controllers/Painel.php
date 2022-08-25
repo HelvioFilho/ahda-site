@@ -67,7 +67,7 @@ class Painel extends BaseController
     return view(
       'only_page',
       [
-        "call" => "adm/minha_conta",
+        "call" => "adm/myAccount",
         "data" => $data,
         "session" => $session,
         "uri" => service('uri'),
@@ -134,7 +134,7 @@ class Painel extends BaseController
     return redirect()->to('minha_conta');
   }
 
-  public function usuarios()
+  public function users()
   {
     $session = session();
     if (!isset($_SESSION['user_id'])) {
@@ -150,7 +150,7 @@ class Painel extends BaseController
     return view(
       'only_page',
       [
-        "call" => "adm/usuarios",
+        "call" => "adm/users",
         "users" => $user,
         "countMsg" => $countMsg,
         "session" => $session,
