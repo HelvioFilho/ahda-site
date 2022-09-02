@@ -45,59 +45,65 @@ $routes->get('adm/recuperar_senha/(:any)/(:any)', 'Admin::changePassword/$1/$2')
 $routes->post('adm/recuperar_senha/(:any)', 'Admin::changePassword/$1');
 $routes->post('adm/recuperar', 'Admin::recoverPassword');
 
-// Rotas painel
+// Painel
 $routes->get('logoff', 'Painel::logoff');
 $routes->get('home', 'Painel::home');
 
-// Minha conta
+// My account
 $routes->get('minha_conta', 'Painel::myAccount');
 $routes->post('minha_conta/atualizar/contato', 'Painel::updateAccount');
 $routes->post('minha_conta/atualizar_img', 'Painel::updateImage');
 
-// usuários
+// users
 $routes->get('usuarios', 'Painel::users');
 $routes->post('user/add', 'Painel::add_user');
 $routes->get('delete_user/(:num)', 'Painel::del_user/$1');
 $routes->post('desabilitar_user', 'Painel::disabled');
 $routes->post('alterar_acesso', 'Painel::updated_access');
 
-//mensagens
+//message
 $routes->get('mensagens', 'Painel::message');
 $routes->get('mensagens/novo', 'Painel::newMessage');
 $routes->get('delete_mensagem/(:num)', 'Painel::deleteMessage/$1');
 $routes->post('marcar_novo', 'Painel::markMessage');
 $routes->post('abrir_mensagem', 'Painel::OpenMessage');
 
-// publicações
+// publications
 $routes->get('publicacoes', 'Painel::publications');
 $routes->post('post/add', 'Painel::addPost');
 
-// editar publicação
+// edit publication
 $routes->get('publicacao/(:num)', 'Painel::pageEdit/$1');
 
-// salvar imagem post
+// save publication image
 $routes->post('save/img', 'Painel::saveImage');
 
-// salvar conteúdo automaticamente
+// save publication checkpoint
 $routes->post('save/status', 'Painel::saveStatus');
 
-// salvar a atualização da página
+// save page update
 $routes->post('post/update/(:num)', 'Painel::pageUpdate/$1');
 
-// deletar publicação
+// delete publication
 $routes->get('delete_publicacao/(:num)', 'Painel::deletePost/$1');
 
-// publicar ou esconder
+// publish or hide
 $routes->post('publicar', 'Painel::publish');
 
-// busca na publicação
+// search publication
 $routes->post('publicacoes/busca', 'Painel::searchPublication');
 $routes->post('alterar_radio', 'Painel::radioUpdate');
 $routes->get('publicacoes/busca', 'Painel::searchPublication');
 
-// carrossel de Imagens
+// image carousel
 $routes->post('add_carousel', 'Painel::addCarousel');
 $routes->post('delete_carousel/(:num)', 'Painel::deleteCarousel/$1');
+
+// API
+$APIVersion = 'api/v1';
+
+$routes->get($APIVersion.'/get_post', 'Api::getPost');
+$routes->post($APIVersion.'/set_message', 'Api::setMessage');
 
 /*
  * --------------------------------------------------------------------
