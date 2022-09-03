@@ -11,7 +11,6 @@ class Api extends BaseController
 
     public function getPost()
     {
-
         $postModel = new PostModel();
         $userModel = new UserModel();
 
@@ -30,7 +29,12 @@ class Api extends BaseController
                 $post->date_post = date('d/m/Y H:i', strtotime($post->date_post));
                 foreach ($user as $us) {
                     if ($post->user === $us->user_id) {
-                        $post->user = $us->username;
+                        $userInfo = (object) array(
+                            'name' => $us->username,
+                            'image' => $us->img,
+                            'about' => $us->about
+                        );
+                        $post->user = $userInfo;
                     }
                 }
             }
