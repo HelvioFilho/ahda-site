@@ -167,11 +167,11 @@ class Painel extends BaseController
     $gera = mt_rand(1, 9999);
     $data = [
       'user_id' => $gera,
-      'acesso' => $this->request->getPost('select'),
+      'access' => $this->request->getPost('select'),
       'username' => $this->request->getPost('name'),
       'email' => $this->request->getPost('email'),
       'passwd' => password_hash("BraVe123#", PASSWORD_DEFAULT),
-      'criacao' => date('Y-m-d H:i:s'),
+      'created_at' => date('Y-m-d H:i:s'),
     ];
 
     if ($userModel->insert($data)) {
