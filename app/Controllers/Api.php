@@ -29,9 +29,10 @@ class Api extends BaseController
                 $post->date_post = date('d/m/Y H:i', strtotime($post->date_post));
                 foreach ($user as $us) {
                     if ($post->user === $us->user_id) {
+                        $img = $us->img ? $us->img : 'generic.jpeg';
                         $userInfo = (object) array(
                             'name' => $us->username,
-                            'image' => $us->img,
+                            'image' => base_url(['img', 'user', $img]),
                             'about' => $us->about
                         );
                         $post->user = $userInfo;
