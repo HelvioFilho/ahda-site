@@ -103,6 +103,7 @@ $routes->post('delete_carousel/(:num)', 'Painel::deleteCarousel/$1');
 $APIVersion = 'api/v1';
 
 $routes->get($APIVersion.'/get_post', 'Api::getPost');
+$routes->get($APIVersion.'/get_image_gallery', 'Api::getImageGallery');
 $routes->post($APIVersion.'/set_message', 'Api::setMessage');
 
 /*

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\ImageModel;
 use App\Models\MessageModel;
 use App\Models\PostModel;
 use App\Models\UserModel;
@@ -46,6 +47,22 @@ class Api extends BaseController
                 'error' => false
             ];
 
+            echo json_encode($data);
+        } else {
+            echo json_encode(['error' => 'Chave incorreta ou inexistente']);
+        }
+    }
+
+    public function getImageGallery()
+    {
+        $imageModel = new ImageModel();
+        $id = $this->request->getGet('id');
+        if ($_ENV['KEY_API'] === $this->request->getGet('key')) {
+            $images = $imageModel->like(['post_id' => $id])->findAll();
+            $data = [
+                'images' => $images,
+                'error' => false,
+            ];
             echo json_encode($data);
         } else {
             echo json_encode(['error' => 'Chave incorreta ou inexistente']);
