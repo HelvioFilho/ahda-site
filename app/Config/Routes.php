@@ -104,6 +104,7 @@ $APIVersion = 'api/v1';
 
 $routes->get($APIVersion.'/get_post', 'Api::getPost');
 $routes->get($APIVersion.'/get_image_gallery', 'Api::getImageGallery');
+$routes->get($APIVersion.'/search', 'Api::search');
 $routes->post($APIVersion.'/set_message', 'Api::setMessage');
 
 /*
