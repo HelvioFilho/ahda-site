@@ -34,6 +34,7 @@
             margin: auto;
             width: 400px;
             height: 350px;
+            object-fit: contain;
           }
 
           .delete {
