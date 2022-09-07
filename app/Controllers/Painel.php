@@ -588,7 +588,6 @@ class Painel extends BaseController
     $messageModel = new MessageModel();
 
     $countMsg = $messageModel->like('is_read', 0)->countAllResults();
-    $posts = $postModel->orderBy('id', 'DESC')->paginate(3);
     $pager = $postModel->pager;
     $user = $userModel->findAll();
 
