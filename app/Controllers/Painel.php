@@ -335,6 +335,7 @@ class Painel extends BaseController
 
     $countMsg = $messageModel->like('is_read', 0)->countAllResults();
     $posts = $postModel->orderBy('id', 'DESC')->paginate(3);
+    $countPost = $postModel->countAllResults();
     $pager = $postModel->pager;
     $user = $userModel->findAll();
 
@@ -344,6 +345,7 @@ class Painel extends BaseController
         "call" => "adm/publications",
         "posts" => $posts,
         "countMsg" => $countMsg,
+        "countPost" => $countPost,
         "user" => $user,
         "pager" => $pager,
         "session" => $session,
@@ -588,6 +590,7 @@ class Painel extends BaseController
     $messageModel = new MessageModel();
 
     $countMsg = $messageModel->like('is_read', 0)->countAllResults();
+    $countPost = $postModel->countAllResults();
     $pager = $postModel->pager;
     $user = $userModel->findAll();
 
@@ -615,6 +618,7 @@ class Painel extends BaseController
         "call" => "adm/publications",
         "posts" => $posts,
         "countMsg" => $countMsg,
+        "countPost" => $countPost,
         "user" => $user,
         "pager" => $pager,
         "session" => $session,
