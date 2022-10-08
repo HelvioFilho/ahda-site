@@ -187,12 +187,12 @@ class Painel extends BaseController
   public function del_user($del)
   {
     $userModel = new UserModel();
-
+    echo $del;
     $dados = $userModel->where('user_id', $del)->first();
     if ($dados->img) {
       unlink("img/user/" . $dados->img);
     }
-    echo $userModel->where('id', $del)->delete();
+    echo $userModel->where('user_id', $del)->delete();
   }
 
   public function updated_access()
