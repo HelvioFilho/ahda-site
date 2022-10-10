@@ -597,7 +597,7 @@ class Painel extends BaseController
     if ($this->request->getPost('busca')) {
       $search = $this->request->getPost('busca');
       $session->set(['search' => $search]);
-    } elseif ($_SESSION['search']) {
+    } elseif (isset($_SESSION['search'])) {
       $search = $_SESSION['search'];
     } else {
       return redirect()->to('publicacoes');
