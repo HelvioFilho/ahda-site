@@ -542,8 +542,13 @@ class Painel extends BaseController
     $imageModel = new ImageModel();
 
     $path = './img/post/' . $id;
+    $pathCasoursel = './img/post/carousel/' . $id;
+
     if (is_dir($path)) {
       $postModel->clearPostImage('./img/post/' . $id);
+    }
+    if (is_dir($pathCasoursel)) {
+      $postModel->clearPostImage('./img/post/carousel/' . $id);
     }
     $statusModel->where('post_id', $id)->delete();
 
@@ -635,14 +640,14 @@ class Painel extends BaseController
     $folder = $this->request->getPost('id');
     $file = $this->request->getFile('arquivoCarousel');
 
-    $uploaddir = './img/post/' . $folder;
+    $uploaddir = './img/post/carousel/' . $folder;
     if (!is_dir($uploaddir)) {
       mkdir($uploaddir, 0777);
     }
 
-    $url = $postModel->uploadImg($file, 'post/' . $folder);
+    $url = $postModel->uploadImg($file, 'post/carousel/' . $folder);
     $data = [
-      "path" => "/post" . "/" . $folder . "/" . $url,
+      "path" => "/post/carousel" . "/" . $folder . "/" . $url,
       "post_id" => $folder
     ];
 
@@ -664,6 +669,7 @@ class Painel extends BaseController
     $id = $this->request->getPost('id');
 
     $image = $imageModel->where('id', $id)->first();
+
     if ($image) {
       unlink("./img" . $image->path);
     }
