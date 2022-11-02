@@ -36,6 +36,7 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
+$routes->get('/politica_privacidade', 'Home::PrivacyPolicy');
 
 // admin
 $routes->get('adm/criar_user', 'Admin::criar_adm');

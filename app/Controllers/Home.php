@@ -21,4 +21,8 @@ class Home extends BaseController
 
     return view('index');
   }
+
+  public function PrivacyPolicy(){
+    return view('privacy_policy');
+  }
 }
